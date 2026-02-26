@@ -1,1 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Center News Show</title>
+  <meta name="description" content="Real talk on data centers, AI infrastructure, energy, and the deals shaping the future. Hosted by Amy Polvado." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #080a0c;
+      --dark: #0e1218;
+      --panel: #141820;
+      --border: #1e2530;
+      --accent: #00d4ff;
+      --accent2: #ff6b00;
+      --text: #c8d4e0;
+      --muted: #5a6878;
+      --white: #f0f4f8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 0; }
 
+    .ticker { background: var(--accent); color: var(--black); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 6px 0; overflow: hidden; position: relative; z-index: 10; }
+    .ticker-inner { display: flex; gap: 60px; animation: ticker 30s linear infinite; white-space: nowrap; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker span { opacity: 0.5; margin: 0 8px; }
+
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(8,10,12,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.1em; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta { background: var(--accent); color: var(--black) !important; padding: 8px 20px; font-weight: 500 !important; transition: background 0.2s !important; }
+    .nav-cta:hover { background: #00b8e0 !important; color: var(--black) !important; }
+
+    .hero { position: relative; z-index: 1; padding: 100px 40px 80px; max-width: 1200px; margin: 0 auto; }
+    .hero-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .hero-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(64px, 10vw, 130px); line-height: 0.9; letter-spacing: 0.02em; color: var(--white); margin-bottom: 32px; }
+    h1 em { font-style: normal; color: var(--accent); display: block; }
+    .hero-sub { font-size: 18px; color: var(--text); max-width: 560px; line-height: 1.7; margin-bottom: 48px; }
+    .hero-sub strong { color: var(--white); font-weight: 500; }
+    .listen-row { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+    .listen-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; }
+    .platform-btn { display: flex; align-items: center; gap: 8px; background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer; transition: all 0.2s; }
+    .platform-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .platform-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .stats-bar { position: relative; z-index: 1; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--panel); display: flex; overflow: hidden; }
+    .stat { flex: 1; padding: 28px 40px; border-right: 1px solid var(--border); text-align: center; }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: var(--accent); letter-spacing: 0.05em; line-height: 1; }
+    .stat-label { font-size: 12px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px; }
+
+    section { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 80px 40px; }
+    .section-header { display: flex; align-items: baseline; gap: 16px; margin-bottom: 48px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--white); letter-spacing: 0.05em; }
+    .section-num { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); }
+
+    .episodes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); }
+    .episode-card { background: var(--dark); padding: 32px; display: flex; flex-direction: column; gap: 12px; transition: background 0.2s; cursor: pointer; text-decoration: none; }
+    .episode-card:hover { background: var(--panel); }
+    .ep-meta { display: flex; align-items: center; gap: 12px; }
+    .ep-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.1em; }
+    .ep-tag { font-size: 11px; color: var(--muted); background: rgba(255,255,255,0.04); padding: 2px 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .ep-date { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; }
+    .ep-title { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 500; color: var(--white); line-height: 1.3; }
+    .ep-desc { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .ep-duration { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; margin-top: auto; }
+    .ep-duration::before { content: '▶'; font-size: 8px; color: var(--accent); }
+    .no-episodes { background: var(--dark); padding: 60px; text-align: center; color: var(--muted); font-family: 'JetBrains Mono', monospace; font-size: 13px; grid-column: 1/-1; }
+
+    .newsletter-section { background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .newsletter-inner { max-width: 1200px; margin: 0 auto; padding: 80px 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .newsletter-copy h2 { font-family: 'Bebas Neue', sans-serif; font-size: 56px; color: var(--white); line-height: 0.95; letter-spacing: 0.03em; margin-bottom: 20px; }
+    .newsletter-copy h2 span { color: var(--accent); }
+    .newsletter-copy p { color: var(--text); line-height: 1.7; font-size: 15px; }
+    .newsletter-perks { list-style: none; margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+    .newsletter-perks li { font-size: 14px; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+    .newsletter-perks li::before { content: '//'; color: var(--accent); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+    .newsletter-form { display: flex; flex-direction: column; gap: 16px; }
+    .newsletter-form input { background: var(--dark); border: 1px solid var(--border); color: var(--white); padding: 16px 20px; font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; width: 100%; }
+    .newsletter-form input:focus { border-color: var(--accent); }
+    .newsletter-form input::placeholder { color: var(--muted); }
+    .btn-primary { background: var(--accent); color: var(--black); border: none; padding: 16px 32px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; width: 100%; }
+    .btn-primary:hover { background: #00b8e0; }
+    .form-note { font-size: 12px; color: var(--muted); text-align: center; }
+
+    .sponsors-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-bottom: 24px; }
+    .sponsor-slot { background: var(--dark); padding: 40px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 160px; transition: background 0.2s; text-decoration: none; }
+    .sponsor-slot:hover { background: var(--panel); }
+    .sponsor-slot img { max-width: 160px; max-height: 60px; object-fit: contain; filter: grayscale(100%) brightness(150%); transition: filter 0.3s; }
+    .sponsor-slot:hover img { filter: none; }
+    .sponsor-name { font-size: 14px; color: var(--muted); font-weight: 500; }
+    .sponsor-placeholder { border: 1px dashed var(--border); background: transparent !important; cursor: default; }
+    .sponsor-placeholder-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-align: center; }
+    .sponsor-cta-text { font-size: 14px; color: var(--muted); text-align: center; }
+    .sponsor-cta-text a { color: var(--accent); text-decoration: none; }
+    .sponsor-cta-text a:hover { text-decoration: underline; }
+
+    .host-section { border-top: 1px solid var(--border); }
+    .host-inner { display: flex; gap: 60px; align-items: flex-start; }
+    .host-photo { width: 200px; height: 200px; flex-shrink: 0; background: var(--panel); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-family: 'Bebas Neue', sans-serif; font-size: 64px; color: var(--accent); letter-spacing: 0.05em; overflow: hidden; }
+    .host-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .host-info h3 { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--white); letter-spacing: 0.05em; margin-bottom: 4px; }
+    .host-title { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 20px; }
+    .host-bio { font-size: 15px; line-height: 1.75; color: var(--text); max-width: 600px; }
+
+    footer { background: var(--panel); border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 40px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.1em; color: var(--muted); }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 60px 20px 40px; }
+      h1 { font-size: 60px; }
+      .stats-bar { flex-direction: column; }
+      .stat { border-right: none; border-bottom: 1px solid var(--border); }
+      section { padding: 60px 20px; }
+      .episodes-grid { grid-template-columns: 1fr; }
+      .newsletter-inner { grid-template-columns: 1fr; gap: 40px; padding: 60px 20px; }
+      .newsletter-copy h2 { font-size: 40px; }
+      .sponsors-grid { grid-template-columns: 1fr 1fr; }
+      .host-inner { flex-direction: column; gap: 30px; }
+      .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>⚡</span> AI INFRASTRUCTURE NEWS <span>|</span> DATA CENTER DEVELOPMENT <span>|</span> ENERGY &amp; POWER MARKETS <span>|</span> HYPERSCALE DEALS <span>|</span> GLOBAL CAPACITY <span>|</span> DIGITAL TWINS <span>|</span> CAPITAL MARKETS <span>⚡</span> AI INFRASTRUCTURE NEWS <span>|</span> DATA CENTER DEVELOPMENT <span>|</span> ENERGY &amp; POWER MARKETS <span>|</span> HYPERSCALE DEALS <span>|</span> GLOBAL CAPACITY <span>|</span> DIGITAL TWINS <span>|</span> CAPITAL MARKETS
+  </div>
+</div>
+
+<nav>
+  <a href="#" class="nav-logo">DATA CENTER<span>NEWS</span></a>
+  <ul class="nav-links">
+    <li><a href="#episodes">Episodes</a></li>
+    <li><a href="#newsletter">Newsletter</a></li>
+    <li><a href="#sponsors">Sponsors</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#newsletter" class="nav-cta">Subscribe Free</a></li>
+  </ul>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">Now Broadcasting</div>
+  <h1>DATA CENTER<em>NEWS SHOW</em></h1>
+  <p class="hero-sub">
+    Real talk on <strong>AI infrastructure</strong>, hyperscale development, energy markets, and the deals shaping the future — globally. Hosted by <strong>Amy Polvado</strong>, one of the most active builders and investors in the data center industry.
+  </p>
+  <p class="listen-label">Watch &amp; Listen On</p>
+  <div class="listen-row" id="platform-links">
+    <!-- Populated by JS -->
+  </div>
+</div>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-num">Global</div><div class="stat-label">Coverage</div></div>
+  <div class="stat"><div class="stat-num" id="stat-episodes">50+</div><div class="stat-label">Episodes</div></div>
+  <div class="stat"><div class="stat-num">TW+</div><div class="stat-label">Pipeline Discussed</div></div>
+  <div class="stat"><div class="stat-num">0%</div><div class="stat-label">Fluff</div></div>
+</div>
+
+<section id="episodes">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Latest Episodes</h2>
+  </div>
+  <div class="episodes-grid" id="episodes-grid">
+    <div class="no-episodes">Loading episodes...</div>
+  </div>
+</section>
+
+<div class="newsletter-section" id="newsletter">
+  <div class="newsletter-inner">
+    <div class="newsletter-copy">
+      <h2>STAY IN THE<span> LOOP</span></h2>
+      <p>Get weekly intelligence on data center deals, power markets, and AI infrastructure — delivered straight to your inbox. No noise. No spam. Just signal.</p>
+      <ul class="newsletter-perks">
+        <li>Weekly episode roundups & key takeaways</li>
+        <li>Breaking deals and market moves — worldwide</li>
+        <li>Global capacity & hyperscaler pipeline updates</li>
+        <li>Exclusive interviews & insider access</li>
+      </ul>
+    </div>
+    <div>
+      <form class="newsletter-form" id="newsletter-form" target="_blank">
+        <input type="text" name="first_name" placeholder="First Name" />
+        <input type="email" name="email" placeholder="Work Email Address" required />
+        <button type="submit" class="btn-primary">Subscribe — It's Free</button>
+        <p class="form-note">Join thousands of data center professionals. Unsubscribe anytime.</p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<section id="sponsors">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Show Sponsors</h2>
+  </div>
+  <div class="sponsors-grid" id="sponsors-grid">
+    <!-- Populated by JS -->
+  </div>
+  <p class="sponsor-cta-text">
+    Reach decision-makers in data center development, AI infrastructure &amp; real estate globally. <a href="#" id="sponsor-email-link">Inquire about sponsorship →</a>
+  </p>
+</section>
+
+<section id="about" class="host-section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Your Host</h2>
+  </div>
+  <div class="host-inner">
+    <div class="host-photo" id="host-photo">AP</div>
+    <div class="host-info">
+      <h3 id="host-name">Amy Polvado</h3>
+      <div class="host-title" id="host-title">CEO, Red River Infrastructure | Founder, Facilimax | Host</div>
+      <p class="host-bio" id="host-bio">Amy Polvado is one of the most active builders at the intersection of AI, infrastructure, and real estate. With 20+ years in commercial real estate — starting as a general contractor and building a $1B+ private equity firm — she now leads Red River Infrastructure and founded Facilimax, an AI digital twin platform for critical infrastructure. Amy brings the perspective of someone who isn't just watching the industry — she's building it.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">DATA CENTER<span>NEWS</span></div>
+    <div class="footer-copy">© 2026 Data Center News Show | datacenternews.show</div>
+  </div>
+</footer>
+
+<script>
+  // ─── STORAGE KEY ────────────────────────────────────────────────
+  const STORAGE_KEY = 'dcnews_site_data';
+
+  // ─── DEFAULTS ───────────────────────────────────────────────────
+  const DEFAULTS = {
+    platforms: [
+      { name: 'YouTube', url: 'https://youtube.com/@DataCenterNewsShow', icon: 'youtube' },
+      { name: 'Spotify', url: 'https://buzzsprout.com/2599127', icon: 'spotify' },
+      { name: 'Apple Podcasts', url: 'https://buzzsprout.com/2599127', icon: 'apple' }
+    ],
+    episodes: [
+      { id: 1, num: 'EP 001', tag: 'Energy', date: 'Feb 2026', title: 'Why the World Is Racing to Build Data Centers', url: '#', description: 'From Virginia to Singapore, demand is exploding. We break down the global forces driving the biggest infrastructure buildout in history.', duration: '42 MIN' },
+      { id: 2, num: 'EP 002', tag: 'AI', date: 'Feb 2026', title: 'Digital Twins: The Operating System for Modern Data Centers', url: '#', description: 'How real-time simulation technology is transforming how we build and run critical infrastructure at scale.', duration: '38 MIN' },
+      { id: 3, num: 'EP 003', tag: 'Capital', date: 'Jan 2026', title: 'Where the $100B Is Coming From: Institutional Capital & Data Centers', url: '#', description: 'Sovereign wealth funds, pension money, and infrastructure investors are all circling. Here\'s what they want to see.', duration: '51 MIN' },
+      { id: 4, num: 'EP 004', tag: 'Environment', date: 'Jan 2026', title: 'Data Centers Are Not Evil — Setting the Record Straight', url: '#', description: 'Cutting through the misinformation around water, energy, and carbon. The real story is more nuanced than the headlines suggest.', duration: '44 MIN' }
+    ],
+    sponsors: [
+      { id: 1, name: 'Sponsor Name', url: '#', logo: '' },
+      { id: 2, name: 'Sponsor Name', url: '#', logo: '' },
+      { id: 3, name: '', url: '', logo: '' }
+    ],
+    sponsorEmail: 'amy@datacenternews.show',
+    substackUrl: 'https://datacenternews.substack.com/subscribe'
+  };
+
+  // ─── LOAD DATA ──────────────────────────────────────────────────
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : DEFAULTS;
+    } catch(e) { return DEFAULTS; }
+  }
+
+  // ─── ICONS ──────────────────────────────────────────────────────
+  const ICONS = {
+    youtube: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3 3 0 00-2.11-2.12C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.39.57A3 3 0 00.5 6.19C0 8.09 0 12 0 12s0 3.91.5 5.81a3 3 0 002.11 2.12C4.5 20.5 12 20.5 12 20.5s7.5 0 9.39-.57a3 3 0 002.11-2.12C24 15.91 24 12 24 12s0-3.91-.5-5.81zM9.75 15.52V8.48L15.5 12l-5.75 3.52z"/></svg>`,
+    spotify: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>`,
+    apple: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>`
+  };
+
+  // ─── RENDER ─────────────────────────────────────────────────────
+  function render() {
+    const data = loadData();
+
+    // Platform buttons
+    const platformEl = document.getElementById('platform-links');
+    platformEl.innerHTML = data.platforms.filter(p => p.url).map(p => `
+      <a class="platform-btn" href="${p.url}" target="_blank">
+        ${ICONS[p.icon] || ''}
+        ${p.name}
+      </a>
+    `).join('');
+
+    // Episodes
+    const grid = document.getElementById('episodes-grid');
+    if (!data.episodes || data.episodes.length === 0) {
+      grid.innerHTML = '<div class="no-episodes">Episodes coming soon. Check back shortly.</div>';
+    } else {
+      grid.innerHTML = data.episodes.slice(0, 6).map((ep, i) => `
+        <a class="episode-card" href="${ep.url || '#'}" target="_blank">
+          <div class="ep-meta">
+            <span class="ep-num">${ep.num || 'EP ' + String(i+1).padStart(3,'0')}</span>
+            ${ep.tag ? `<span class="ep-tag">${ep.tag}</span>` : ''}
+            <span class="ep-date">${ep.date || ''}</span>
+          </div>
+          <div class="ep-title">${ep.title}</div>
+          <div class="ep-desc">${ep.description || ''}</div>
+          ${ep.duration ? `<div class="ep-duration">${ep.duration}</div>` : ''}
+        </a>
+      `).join('');
+    }
+
+    // Episode count stat
+    document.getElementById('stat-episodes').textContent = data.episodes.length > 0 ? data.episodes.length + (data.episodes.length >= 10 ? '+' : '') : '0';
+
+    // Sponsors
+    const sponsorsGrid = document.getElementById('sponsors-grid');
+    sponsorsGrid.innerHTML = data.sponsors.map(s => {
+      if (!s.name && !s.logo) return `
+        <div class="sponsor-slot sponsor-placeholder">
+          <div class="sponsor-placeholder-text">SPONSORSHIP<br/>AVAILABLE</div>
+        </div>`;
+      return `
+        <a class="sponsor-slot" href="${s.url || '#'}" target="_blank">
+          ${s.logo ? `<img src="${s.logo}" alt="${s.name}" />` : ''}
+          ${s.name ? `<div class="sponsor-name">${s.name}</div>` : ''}
+        </a>`;
+    }).join('');
+
+    // Sponsor email
+    const emailLink = document.getElementById('sponsor-email-link');
+    emailLink.href = `mailto:${data.sponsorEmail || 'amy@datacenternews.show'}`;
+
+    // Newsletter form
+    const form = document.getElementById('newsletter-form');
+    form.action = data.substackUrl || 'https://datacenternews.substack.com/subscribe';
+    form.method = 'GET';
+  }
+
+  render();
+</script>
+</body>
+</html>
