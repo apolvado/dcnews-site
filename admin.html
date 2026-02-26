@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DCNS Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #080a0c;
+      --dark: #0e1218;
+      --panel: #141820;
+      --border: #1e2530;
+      --accent: #00d4ff;
+      --accent2: #ff6b00;
+      --green: #00ff88;
+      --red: #ff4444;
+      --text: #c8d4e0;
+      --muted: #5a6878;
+      --white: #f0f4f8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; min-height: 100vh; }
+
+    /* LOGIN */
+    #login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .login-box {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 48px;
+      width: 380px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .login-logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); letter-spacing: 0.1em; text-align: center; }
+    .login-logo span { color: var(--accent); }
+    .login-sub { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); text-align: center; letter-spacing: 0.15em; text-transform: uppercase; }
+    .login-error { font-size: 12px; color: var(--red); text-align: center; display: none; }
+
+    /* ADMIN LAYOUT */
+    #admin-screen { display: none; }
+    .admin-header {
+      background: var(--panel);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 60px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .admin-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: var(--white); letter-spacing: 0.1em; }
+    .admin-logo span { color: var(--accent); }
+    .admin-badge { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--green); background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.3); padding: 3px 10px; letter-spacing: 0.1em; }
+    .admin-body { display: grid; grid-template-columns: 220px 1fr; min-height: calc(100vh - 60px); }
+
+    /* SIDEBAR */
+    .sidebar { background: var(--dark); border-right: 1px solid var(--border); padding: 24px 0; }
+    .sidebar-section { padding: 0 16px; margin-bottom: 8px; }
+    .sidebar-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 0.2em; text-transform: uppercase; padding: 8px 12px 4px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; cursor: pointer; border-radius: 2px;
+      color: var(--muted); font-size: 13px; font-weight: 500;
+      transition: all 0.15s; border: none; background: none; width: 100%; text-align: left;
+    }
+    .nav-item:hover { background: rgba(255,255,255,0.04); color: var(--text); }
+    .nav-item.active { background: rgba(0,212,255,0.1); color: var(--accent); }
+    .nav-item .icon { width: 16px; text-align: center; font-size: 14px; }
+
+    /* MAIN CONTENT */
+    .main-content { padding: 40px; overflow-y: auto; }
+    .page { display: none; }
+    .page.active { display: block; }
+    .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--white); letter-spacing: 0.05em; margin-bottom: 8px; }
+    .page-sub { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+
+    /* CARDS */
+    .card { background: var(--panel); border: 1px solid var(--border); padding: 28px; margin-bottom: 20px; }
+    .card-title { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 20px; }
+
+    /* FORMS */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-row.single { grid-template-columns: 1fr; }
+    .form-row.triple { grid-template-columns: 1fr 1fr 1fr; }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field label { font-size: 12px; color: var(--muted); letter-spacing: 0.05em; font-weight: 500; }
+    .field input, .field textarea, .field select {
+      background: var(--dark); border: 1px solid var(--border); color: var(--white);
+      padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.2s; resize: vertical;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus { border-color: var(--accent); }
+    .field input::placeholder, .field textarea::placeholder { color: var(--muted); }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; letter-spacing: 0.04em; }
+    .btn-accent { background: var(--accent); color: var(--black); }
+    .btn-accent:hover { background: #00b8e0; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { border-color: var(--text); }
+    .btn-danger { background: transparent; border: 1px solid rgba(255,68,68,0.3); color: var(--red); }
+    .btn-danger:hover { background: rgba(255,68,68,0.1); }
+    .btn-sm { padding: 6px 14px; font-size: 12px; }
+    .btn-row { display: flex; gap: 12px; align-items: center; margin-top: 20px; flex-wrap: wrap; }
+
+    /* EPISODES LIST */
+    .episode-item {
+      background: var(--dark); border: 1px solid var(--border); padding: 20px 24px;
+      margin-bottom: 8px; display: flex; align-items: flex-start; gap: 20px;
+    }
+    .ep-drag { color: var(--muted); cursor: grab; font-size: 18px; padding-top: 2px; flex-shrink: 0; }
+    .ep-info { flex: 1; min-width: 0; }
+    .ep-item-title { font-weight: 500; color: var(--white); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .ep-item-meta { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+    .ep-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+    /* SPONSOR GRID */
+    .sponsor-admin-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .sponsor-admin-card { background: var(--dark); border: 1px solid var(--border); padding: 24px; }
+    .sponsor-admin-card h4 { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 16px; }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 32px; right: 32px;
+      background: var(--green); color: var(--black);
+      font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;
+      padding: 12px 24px; letter-spacing: 0.1em;
+      transform: translateY(80px); opacity: 0;
+      transition: all 0.3s; z-index: 9999;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+    .toast.error { background: var(--red); color: var(--white); }
+
+    /* DIVIDER */
+    .divider { border: none; border-top: 1px solid var(--border); margin: 24px 0; }
+
+    /* ADD EPISODE FORM */
+    .add-episode-form { background: var(--dark); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px; display: none; }
+    .add-episode-form.open { display: block; }
+
+    input[type="password"] { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2em; }
+  </style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">DATA CENTER<span>NEWS</span></div>
+    <div class="login-sub">Admin Panel</div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="password-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter') doLogin()" />
+    </div>
+    <div class="login-error" id="login-error">Incorrect password. Try again.</div>
+    <button class="btn btn-accent" onclick="doLogin()">Sign In →</button>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div id="admin-screen">
+  <div class="admin-header">
+    <div class="admin-logo">DATA CENTER<span>NEWS</span> <span style="font-size:13px;font-family:'DM Sans',sans-serif;font-weight:300;color:var(--muted);letter-spacing:0"> Admin</span></div>
+    <div style="display:flex;gap:16px;align-items:center">
+      <span class="admin-badge">● LIVE</span>
+      <button class="btn btn-ghost btn-sm" onclick="window.open('index.html','_blank')">View Site ↗</button>
+      <button class="btn btn-ghost btn-sm" onclick="doLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="admin-body">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sidebar-label">Content</div>
+      <div class="sidebar-section">
+        <button class="nav-item active" onclick="showPage('episodes', this)"><span class="icon">🎙</span> Episodes</button>
+        <button class="nav-item" onclick="showPage('sponsors', this)"><span class="icon">🏷</span> Sponsors</button>
+        <button class="nav-item" onclick="showPage('platforms', this)"><span class="icon">📡</span> Platforms</button>
+      </div>
+      <div class="sidebar-label">Settings</div>
+      <div class="sidebar-section">
+        <button class="nav-item" onclick="showPage('newsletter', this)"><span class="icon">📧</span> Newsletter</button>
+        <button class="nav-item" onclick="showPage('password', this)"><span class="icon">🔑</span> Password</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+      <!-- EPISODES PAGE -->
+      <div class="page active" id="page-episodes">
+        <div class="page-title">Episodes</div>
+        <div class="page-sub">Add, edit, or remove episodes. Most recent should be at the top — up to 6 show on the site.</div>
+
+        <button class="btn btn-accent" onclick="toggleAddForm()" id="add-btn">+ Add New Episode</button>
+
+        <div class="add-episode-form" id="add-episode-form" style="margin-top:16px">
+          <div class="card-title">New Episode</div>
+          <div class="form-row">
+            <div class="field"><label>Episode Number (e.g. EP 047)</label><input type="text" id="new-ep-num" placeholder="EP 047" /></div>
+            <div class="field"><label>Tag / Category</label><input type="text" id="new-ep-tag" placeholder="Energy, AI, Capital..." /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Episode Title *</label><input type="text" id="new-ep-title" placeholder="Episode title" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Description</label><textarea id="new-ep-desc" rows="3" placeholder="Brief description of the episode..."></textarea></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>YouTube / Podcast URL *</label><input type="url" id="new-ep-url" placeholder="https://youtube.com/watch?v=..." /></div>
+            <div class="field"><label>Duration (e.g. 42 MIN)</label><input type="text" id="new-ep-duration" placeholder="42 MIN" /></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Date (e.g. Feb 2026)</label><input type="text" id="new-ep-date" placeholder="Feb 2026" /></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="addEpisode()">Save Episode</button>
+            <button class="btn btn-ghost" onclick="toggleAddForm()">Cancel</button>
+          </div>
+        </div>
+
+        <hr class="divider" />
+        <div id="episodes-list"></div>
+      </div>
+
+      <!-- SPONSORS PAGE -->
+      <div class="page" id="page-sponsors">
+        <div class="page-title">Sponsors</div>
+        <div class="page-sub">Manage up to 3 sponsor slots. Leave name empty to show "Sponsorship Available" placeholder.</div>
+        <div class="sponsor-admin-grid" id="sponsor-admin-grid"></div>
+        <div class="btn-row">
+          <button class="btn btn-accent" onclick="saveSponsors()">Save Sponsors</button>
+        </div>
+      </div>
+
+      <!-- PLATFORMS PAGE -->
+      <div class="page" id="page-platforms">
+        <div class="page-title">Platforms</div>
+        <div class="page-sub">Update the links where people can watch or listen to the show.</div>
+        <div class="card">
+          <div class="card-title">Platform Links</div>
+          <div class="form-row single">
+            <div class="field"><label>YouTube Channel URL</label><input type="url" id="url-youtube" placeholder="https://youtube.com/@YourChannel" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Spotify / Buzzsprout URL</label><input type="url" id="url-spotify" placeholder="https://buzzsprout.com/2599127" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Apple Podcasts URL</label><input type="url" id="url-apple" placeholder="https://podcasts.apple.com/..." /></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="savePlatforms()">Save Platform Links</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEWSLETTER PAGE -->
+      <div class="page" id="page-newsletter">
+        <div class="page-title">Newsletter</div>
+        <div class="page-sub">Configure your Substack signup and sponsorship contact email.</div>
+        <div class="card">
+          <div class="card-title">Substack Settings</div>
+          <div class="form-row single">
+            <div class="field"><label>Substack Subscribe URL</label><input type="url" id="substack-url" placeholder="https://datacenternews.substack.com/subscribe" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Sponsorship Inquiry Email</label><input type="email" id="sponsor-email" placeholder="amy@datacenternews.show" /></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="saveNewsletter()">Save Settings</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PASSWORD PAGE -->
+      <div class="page" id="page-password">
+        <div class="page-title">Change Password</div>
+        <div class="page-sub">Update your admin panel password.</div>
+        <div class="card">
+          <div class="card-title">Password</div>
+          <div class="form-row single">
+            <div class="field"><label>Current Password</label><input type="password" id="current-pw" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>New Password</label><input type="password" id="new-pw" /></div>
+          </div>
+          <div class="form-row single">
+            <div class="field"><label>Confirm New Password</label><input type="password" id="confirm-pw" /></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="changePassword()">Update Password</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end main-content -->
+  </div><!-- end admin-body -->
+</div><!-- end admin-screen -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── STORAGE ─────────────────────────────────────────────────────
+  const STORAGE_KEY = 'dcnews_site_data';
+  const PW_KEY = 'dcnews_admin_pw';
+  const SESSION_KEY = 'dcnews_session';
+  const DEFAULT_PW = 'DCNews2026!';
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : getDefaults();
+    } catch(e) { return getDefaults(); }
+  }
+
+  function saveData(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function getDefaults() {
+    return {
+      platforms: [
+        { name: 'YouTube', url: '', icon: 'youtube' },
+        { name: 'Spotify', url: 'https://buzzsprout.com/2599127', icon: 'spotify' },
+        { name: 'Apple Podcasts', url: '', icon: 'apple' }
+      ],
+      episodes: [],
+      sponsors: [
+        { id: 1, name: '', url: '', logo: '' },
+        { id: 2, name: '', url: '', logo: '' },
+        { id: 3, name: '', url: '', logo: '' }
+      ],
+      sponsorEmail: 'amy@datacenternews.show',
+      substackUrl: 'https://datacenternews.substack.com/subscribe'
+    };
+  }
+
+  // ─── AUTH ─────────────────────────────────────────────────────────
+  function getPassword() {
+    return localStorage.getItem(PW_KEY) || DEFAULT_PW;
+  }
+
+  function doLogin() {
+    const pw = document.getElementById('password-input').value;
+    if (pw === getPassword()) {
+      sessionStorage.setItem(SESSION_KEY, '1');
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-screen').style.display = 'block';
+      initAdmin();
+    } else {
+      document.getElementById('login-error').style.display = 'block';
+      document.getElementById('password-input').value = '';
+    }
+  }
+
+  function doLogout() {
+    sessionStorage.removeItem(SESSION_KEY);
+    location.reload();
+  }
+
+  // Check session on load
+  window.addEventListener('DOMContentLoaded', () => {
+    if (sessionStorage.getItem(SESSION_KEY)) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('admin-screen').style.display = 'block';
+      initAdmin();
+    }
+  });
+
+  // ─── NAVIGATION ───────────────────────────────────────────────────
+  function showPage(name, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'episodes') renderEpisodesList();
+    if (name === 'sponsors') renderSponsorAdmin();
+    if (name === 'platforms') loadPlatformFields();
+    if (name === 'newsletter') loadNewsletterFields();
+  }
+
+  // ─── TOAST ────────────────────────────────────────────────────────
+  function toast(msg, isError) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast' + (isError ? ' error' : '') + ' show';
+    setTimeout(() => el.className = 'toast' + (isError ? ' error' : ''), 2500);
+  }
+
+  // ─── INIT ─────────────────────────────────────────────────────────
+  function initAdmin() {
+    renderEpisodesList();
+  }
+
+  // ─── EPISODES ─────────────────────────────────────────────────────
+  function renderEpisodesList() {
+    const data = loadData();
+    const list = document.getElementById('episodes-list');
+    if (!data.episodes || data.episodes.length === 0) {
+      list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">No episodes yet. Add your first episode above.</div>';
+      return;
+    }
+    list.innerHTML = data.episodes.map((ep, i) => `
+      <div class="episode-item">
+        <div class="ep-drag">⠿</div>
+        <div class="ep-info">
+          <div class="ep-item-title">${ep.title}</div>
+          <div class="ep-item-meta">${ep.num || ''} ${ep.tag ? '· ' + ep.tag : ''} ${ep.date ? '· ' + ep.date : ''} ${ep.duration ? '· ' + ep.duration : ''}</div>
+        </div>
+        <div class="ep-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editEpisode(${i})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteEpisode(${i})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleAddForm() {
+    const form = document.getElementById('add-episode-form');
+    const open = form.classList.toggle('open');
+    document.getElementById('add-btn').textContent = open ? '✕ Cancel' : '+ Add New Episode';
+    if (!open) clearAddForm();
+  }
+
+  function clearAddForm() {
+    ['new-ep-num','new-ep-tag','new-ep-title','new-ep-desc','new-ep-url','new-ep-duration','new-ep-date'].forEach(id => {
+      document.getElementById(id).value = '';
+    });
+  }
+
+  function addEpisode() {
+    const title = document.getElementById('new-ep-title').value.trim();
+    const url = document.getElementById('new-ep-url').value.trim();
+    if (!title || !url) { toast('Title and URL are required', true); return; }
+
+    const data = loadData();
+    const ep = {
+      id: Date.now(),
+      num: document.getElementById('new-ep-num').value.trim(),
+      tag: document.getElementById('new-ep-tag').value.trim(),
+      title,
+      description: document.getElementById('new-ep-desc').value.trim(),
+      url,
+      duration: document.getElementById('new-ep-duration').value.trim(),
+      date: document.getElementById('new-ep-date').value.trim()
+    };
+    data.episodes.unshift(ep); // newest first
+    saveData(data);
+    clearAddForm();
+    document.getElementById('add-episode-form').classList.remove('open');
+    document.getElementById('add-btn').textContent = '+ Add New Episode';
+    renderEpisodesList();
+    toast('Episode saved!');
+  }
+
+  function deleteEpisode(i) {
+    if (!confirm('Delete this episode?')) return;
+    const data = loadData();
+    data.episodes.splice(i, 1);
+    saveData(data);
+    renderEpisodesList();
+    toast('Episode deleted');
+  }
+
+  function editEpisode(i) {
+    const data = loadData();
+    const ep = data.episodes[i];
+    // Open form and prefill
+    document.getElementById('add-episode-form').classList.add('open');
+    document.getElementById('add-btn').textContent = '✕ Cancel';
+    document.getElementById('new-ep-num').value = ep.num || '';
+    document.getElementById('new-ep-tag').value = ep.tag || '';
+    document.getElementById('new-ep-title').value = ep.title || '';
+    document.getElementById('new-ep-desc').value = ep.description || '';
+    document.getElementById('new-ep-url').value = ep.url || '';
+    document.getElementById('new-ep-duration').value = ep.duration || '';
+    document.getElementById('new-ep-date').value = ep.date || '';
+    // Change save to update
+    document.querySelector('#add-episode-form .btn-accent').textContent = 'Update Episode';
+    document.querySelector('#add-episode-form .btn-accent').onclick = () => updateEpisode(i);
+    document.getElementById('add-episode-form').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function updateEpisode(i) {
+    const title = document.getElementById('new-ep-title').value.trim();
+    const url = document.getElementById('new-ep-url').value.trim();
+    if (!title || !url) { toast('Title and URL are required', true); return; }
+    const data = loadData();
+    data.episodes[i] = {
+      ...data.episodes[i],
+      num: document.getElementById('new-ep-num').value.trim(),
+      tag: document.getElementById('new-ep-tag').value.trim(),
+      title,
+      description: document.getElementById('new-ep-desc').value.trim(),
+      url,
+      duration: document.getElementById('new-ep-duration').value.trim(),
+      date: document.getElementById('new-ep-date').value.trim()
+    };
+    saveData(data);
+    clearAddForm();
+    document.getElementById('add-episode-form').classList.remove('open');
+    document.getElementById('add-btn').textContent = '+ Add New Episode';
+    document.querySelector('#add-episode-form .btn-accent').textContent = 'Save Episode';
+    document.querySelector('#add-episode-form .btn-accent').onclick = addEpisode;
+    renderEpisodesList();
+    toast('Episode updated!');
+  }
+
+  // ─── SPONSORS ─────────────────────────────────────────────────────
+  function renderSponsorAdmin() {
+    const data = loadData();
+    const grid = document.getElementById('sponsor-admin-grid');
+    grid.innerHTML = [0,1,2].map(i => {
+      const s = data.sponsors[i] || { name: '', url: '', logo: '' };
+      return `
+        <div class="sponsor-admin-card">
+          <h4>Slot ${i+1}</h4>
+          <div class="field" style="margin-bottom:12px"><label>Sponsor Name</label><input type="text" id="sp-name-${i}" value="${s.name || ''}" placeholder="Leave blank = Available" /></div>
+          <div class="field" style="margin-bottom:12px"><label>Website URL</label><input type="url" id="sp-url-${i}" value="${s.url || ''}" placeholder="https://..." /></div>
+          <div class="field"><label>Logo URL (hosted image)</label><input type="url" id="sp-logo-${i}" value="${s.logo || ''}" placeholder="https://...logo.png" /></div>
+        </div>`;
+    }).join('');
+  }
+
+  function saveSponsors() {
+    const data = loadData();
+    data.sponsors = [0,1,2].map(i => ({
+      id: i+1,
+      name: document.getElementById(`sp-name-${i}`).value.trim(),
+      url: document.getElementById(`sp-url-${i}`).value.trim(),
+      logo: document.getElementById(`sp-logo-${i}`).value.trim()
+    }));
+    saveData(data);
+    toast('Sponsors saved!');
+  }
+
+  // ─── PLATFORMS ────────────────────────────────────────────────────
+  function loadPlatformFields() {
+    const data = loadData();
+    const yt = data.platforms.find(p => p.icon === 'youtube');
+    const sp = data.platforms.find(p => p.icon === 'spotify');
+    const ap = data.platforms.find(p => p.icon === 'apple');
+    document.getElementById('url-youtube').value = yt ? yt.url : '';
+    document.getElementById('url-spotify').value = sp ? sp.url : '';
+    document.getElementById('url-apple').value = ap ? ap.url : '';
+  }
+
+  function savePlatforms() {
+    const data = loadData();
+    data.platforms = [
+      { name: 'YouTube', url: document.getElementById('url-youtube').value.trim(), icon: 'youtube' },
+      { name: 'Spotify', url: document.getElementById('url-spotify').value.trim(), icon: 'spotify' },
+      { name: 'Apple Podcasts', url: document.getElementById('url-apple').value.trim(), icon: 'apple' }
+    ].filter(p => p.url);
+    saveData(data);
+    toast('Platform links saved!');
+  }
+
+  // ─── NEWSLETTER ───────────────────────────────────────────────────
+  function loadNewsletterFields() {
+    const data = loadData();
+    document.getElementById('substack-url').value = data.substackUrl || '';
+    document.getElementById('sponsor-email').value = data.sponsorEmail || '';
+  }
+
+  function saveNewsletter() {
+    const data = loadData();
+    data.substackUrl = document.getElementById('substack-url').value.trim();
+    data.sponsorEmail = document.getElementById('sponsor-email').value.trim();
+    saveData(data);
+    toast('Newsletter settings saved!');
+  }
+
+  // ─── PASSWORD ─────────────────────────────────────────────────────
+  function changePassword() {
+    const cur = document.getElementById('current-pw').value;
+    const nw = document.getElementById('new-pw').value;
+    const conf = document.getElementById('confirm-pw').value;
+    if (cur !== getPassword()) { toast('Current password is wrong', true); return; }
+    if (!nw || nw.length < 6) { toast('New password must be 6+ characters', true); return; }
+    if (nw !== conf) { toast('Passwords do not match', true); return; }
+    localStorage.setItem(PW_KEY, nw);
+    document.getElementById('current-pw').value = '';
+    document.getElementById('new-pw').value = '';
+    document.getElementById('confirm-pw').value = '';
+    toast('Password updated!');
+  }
+</script>
+</body>
+</html>
