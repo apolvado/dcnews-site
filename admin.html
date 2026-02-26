@@ -207,6 +207,20 @@
 
         <div class="add-episode-form" id="add-episode-form" style="margin-top:16px">
           <div class="card-title">New Episode</div>
+
+          <!-- YOUTUBE AUTO-IMPORT -->
+          <div style="background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);padding:20px;margin-bottom:24px;">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:12px;">⚡ Auto-Import from YouTube</div>
+            <div style="display:flex;gap:12px;align-items:flex-end">
+              <div class="field" style="flex:1;margin:0">
+                <label>Paste your YouTube URL and we'll fill in the form automatically</label>
+                <input type="url" id="yt-import-url" placeholder="https://youtube.com/watch?v=..." onkeydown="if(event.key==='Enter') importFromYouTube()" />
+              </div>
+              <button class="btn btn-accent" onclick="importFromYouTube()" id="import-btn" style="flex-shrink:0;height:42px;margin-bottom:0">Import →</button>
+            </div>
+            <div id="import-status" style="font-size:12px;color:var(--muted);margin-top:8px;display:none"></div>
+          </div>
+
           <div class="form-row">
             <div class="field"><label>Episode Number (e.g. EP 047)</label><input type="text" id="new-ep-num" placeholder="EP 047" /></div>
             <div class="field"><label>Tag / Category</label><input type="text" id="new-ep-tag" placeholder="Energy, AI, Capital..." /></div>
@@ -225,7 +239,7 @@
             <div class="field"><label>Date (e.g. Feb 2026)</label><input type="text" id="new-ep-date" placeholder="Feb 2026" /></div>
           </div>
           <div class="btn-row">
-            <button class="btn btn-accent" onclick="addEpisode()">Save Episode</button>
+            <button class="btn btn-accent" id="save-ep-btn" onclick="addEpisode()">Save Episode</button>
             <button class="btn btn-ghost" onclick="toggleAddForm()">Cancel</button>
           </div>
         </div>
@@ -403,7 +417,79 @@
     renderEpisodesList();
   }
 
-  // ─── EPISODES ─────────────────────────────────────────────────────
+  // ─── YOUTUBE AUTO-IMPORT ──────────────────────────────────────────
+  async function importFromYouTube() {
+    const url = document.getElementById('yt-import-url').value.trim();
+    if (!url || !url.includes('youtube')) { toast('Please enter a valid YouTube URL', true); return; }
+
+    const btn = document.getElementById('import-btn');
+    const status = document.getElementById('import-status');
+    btn.textContent = 'Importing...';
+    btn.disabled = true;
+    status.style.display = 'block';
+    status.style.color = 'var(--accent)';
+    status.textContent = '⚡ Fetching video details with AI...';
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+          messages: [{
+            role: 'user',
+            content: `Search for this YouTube video and extract its details: ${url}
+            
+Return ONLY a JSON object with these exact fields, no other text:
+{
+  "title": "full video title",
+  "description": "2-3 sentence summary of what the episode covers, written for a data center industry audience",
+  "date": "month and year published e.g. Feb 2026",
+  "duration": "duration in format like 42 MIN",
+  "tag": "one category tag from: Energy, AI, Capital, Environment, Infrastructure, Policy, Technology"
+}`
+          }]
+        })
+      });
+
+      const data = await response.json();
+      
+      // Extract text from response
+      const textBlock = data.content && data.content.find(b => b.type === 'text');
+      if (!textBlock) throw new Error('No response');
+
+      // Parse JSON from response
+      const text = textBlock.text;
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (!jsonMatch) throw new Error('Could not parse response');
+      
+      const info = JSON.parse(jsonMatch[0]);
+
+      // Fill in the form
+      if (info.title) document.getElementById('new-ep-title').value = info.title;
+      if (info.description) document.getElementById('new-ep-desc').value = info.description;
+      if (info.date) document.getElementById('new-ep-date').value = info.date;
+      if (info.duration) document.getElementById('new-ep-duration').value = info.duration;
+      if (info.tag) document.getElementById('new-ep-tag').value = info.tag;
+      document.getElementById('new-ep-url').value = url;
+
+      status.style.color = 'var(--green)';
+      status.textContent = '✓ Details imported! Review and edit below, then save.';
+      toast('Episode details imported!');
+
+    } catch(err) {
+      status.style.color = 'var(--red)';
+      status.textContent = '✗ Could not auto-import. Please fill in the details manually.';
+      document.getElementById('new-ep-url').value = url;
+    }
+
+    btn.textContent = 'Import →';
+    btn.disabled = false;
+  }
+
+
   function renderEpisodesList() {
     const data = loadData();
     const list = document.getElementById('episodes-list');
@@ -487,8 +573,8 @@
     document.getElementById('new-ep-duration').value = ep.duration || '';
     document.getElementById('new-ep-date').value = ep.date || '';
     // Change save to update
-    document.querySelector('#add-episode-form .btn-accent').textContent = 'Update Episode';
-    document.querySelector('#add-episode-form .btn-accent').onclick = () => updateEpisode(i);
+    document.getElementById('save-ep-btn').textContent = 'Update Episode';
+    document.getElementById('save-ep-btn').onclick = () => updateEpisode(i);
     document.getElementById('add-episode-form').scrollIntoView({ behavior: 'smooth' });
   }
 
@@ -511,8 +597,8 @@
     clearAddForm();
     document.getElementById('add-episode-form').classList.remove('open');
     document.getElementById('add-btn').textContent = '+ Add New Episode';
-    document.querySelector('#add-episode-form .btn-accent').textContent = 'Save Episode';
-    document.querySelector('#add-episode-form .btn-accent').onclick = addEpisode;
+    document.getElementById('save-ep-btn').textContent = 'Save Episode';
+    document.getElementById('save-ep-btn').onclick = addEpisode;
     renderEpisodesList();
     toast('Episode updated!');
   }
