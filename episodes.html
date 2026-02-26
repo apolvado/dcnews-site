@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Episodes — Data Center News Show</title>
+  <meta name="description" content="Browse all episodes of the Data Center News Show. Search by topic, filter by category." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #080a0c; --dark: #0e1218; --panel: #141820; --border: #1e2530;
+      --accent: #00d4ff; --text: #c8d4e0; --muted: #5a6878; --white: #f0f4f8;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: var(--black); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px); background-size: 60px 60px; pointer-events: none; z-index: 0; }
+
+    /* TICKER */
+    .ticker { background: var(--accent); color: var(--black); font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.05em; padding: 6px 0; overflow: hidden; position: relative; z-index: 10; }
+    .ticker-inner { display: flex; gap: 60px; animation: ticker 30s linear infinite; white-space: nowrap; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .ticker span { opacity: 0.5; margin: 0 8px; }
+
+    /* NAV */
+    nav { position: sticky; top: 0; z-index: 100; background: rgba(8,10,12,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; }
+    .nav-logo { height: 40px; width: auto; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-cta { background: var(--accent); color: var(--black) !important; padding: 8px 20px; font-weight: 500 !important; }
+    .nav-cta:hover { background: #00b8e0 !important; }
+
+    /* PAGE HEADER */
+    .page-header { position: relative; z-index: 1; padding: 60px 40px 40px; max-width: 1200px; margin: 0 auto; }
+    .page-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .page-tag::before { content: ''; display: inline-block; width: 24px; height: 1px; background: var(--accent); }
+    .page-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(48px, 7vw, 90px); line-height: 0.9; color: var(--white); letter-spacing: 0.02em; margin-bottom: 16px; }
+    .page-title span { color: var(--accent); }
+    .episode-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
+
+    /* SEARCH & FILTER */
+    .controls { position: relative; z-index: 1; background: var(--panel); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 20px 40px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; max-width: 100%; }
+    .search-wrap { position: relative; flex: 1; min-width: 200px; }
+    .search-wrap input { width: 100%; background: var(--dark); border: 1px solid var(--border); color: var(--white); padding: 10px 14px 10px 40px; font-family: 'DM Sans', sans-serif; font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .search-wrap input:focus { border-color: var(--accent); }
+    .search-wrap input::placeholder { color: var(--muted); }
+    .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
+    .tags-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; letter-spacing: 0.04em; }
+    .tag-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .tag-btn.active { background: var(--accent); border-color: var(--accent); color: var(--black); font-weight: 600; }
+    .results-info { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); margin-left: auto; white-space: nowrap; }
+
+    /* EPISODES GRID */
+    .episodes-container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 40px; }
+    .episodes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+    .episode-card { background: var(--dark); padding: 28px; display: flex; flex-direction: column; gap: 10px; transition: background 0.2s; text-decoration: none; }
+    .episode-card:hover { background: var(--panel); }
+    .ep-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ep-num { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--accent); letter-spacing: 0.1em; }
+    .ep-tag-pill { font-size: 10px; color: var(--muted); background: rgba(255,255,255,0.04); padding: 2px 8px; letter-spacing: 0.06em; text-transform: uppercase; }
+    .ep-date { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); margin-left: auto; }
+    .ep-title { font-size: 15px; font-weight: 500; color: var(--white); line-height: 1.35; }
+    .ep-desc { font-size: 13px; color: var(--muted); line-height: 1.6; flex: 1; }
+    .ep-duration { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; margin-top: auto; }
+    .ep-duration::before { content: '▶'; font-size: 7px; color: var(--accent); }
+
+    /* NO RESULTS */
+    .no-results { grid-column: 1/-1; padding: 80px 40px; text-align: center; color: var(--muted); }
+    .no-results-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--white); margin-bottom: 8px; }
+    .no-results p { font-size: 14px; }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 100px 40px; color: var(--muted); }
+    .empty-state-title { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--white); margin-bottom: 12px; letter-spacing: 0.05em; }
+    .empty-state p { font-size: 15px; line-height: 1.7; max-width: 480px; margin: 0 auto 24px; }
+    .empty-state a { color: var(--accent); text-decoration: none; }
+
+    /* FOOTER */
+    footer { background: var(--panel); border-top: 1px solid var(--border); position: relative; z-index: 1; margin-top: 40px; }
+    .footer-inner { max-width: 1200px; margin: 0 auto; padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
+    .footer-back { color: var(--accent); text-decoration: none; font-size: 13px; }
+    .footer-back:hover { text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .page-header { padding: 40px 20px 24px; }
+      .controls { padding: 16px 20px; }
+      .episodes-container { padding: 24px 20px; }
+      .episodes-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 12px; text-align: center; padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>⚡</span> AI INFRASTRUCTURE NEWS <span>|</span> DATA CENTER DEVELOPMENT <span>|</span> ENERGY &amp; POWER MARKETS <span>|</span> HYPERSCALE DEALS <span>|</span> GLOBAL CAPACITY <span>|</span> DIGITAL TWINS <span>|</span> CAPITAL MARKETS <span>⚡</span> AI INFRASTRUCTURE NEWS <span>|</span> DATA CENTER DEVELOPMENT <span>|</span> ENERGY &amp; POWER MARKETS <span>|</span> HYPERSCALE DEALS <span>|</span> GLOBAL CAPACITY <span>|</span> DIGITAL TWINS <span>|</span> CAPITAL MARKETS
+  </div>
+</div>
+
+<nav>
+  <a href="index.html"><img class="nav-logo" src="https://raw.githubusercontent.com/apolvado/dcnews-site/main/DCNS_Logo.png" alt="Data Center News Show" /></a>
+  <ul class="nav-links">
+    <li><a href="index.html#live">Watch Live</a></li>
+    <li><a href="episodes.html" class="active">All Episodes</a></li>
+    <li><a href="index.html#newsletter">Newsletter</a></li>
+    <li><a href="index.html#sponsors">Sponsors</a></li>
+    <li><a href="index.html#about">About</a></li>
+    <li><a href="index.html#newsletter" class="nav-cta">Subscribe Free</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <div class="page-tag">Full Archive</div>
+  <div class="page-title">ALL<span> EPISODES</span></div>
+  <div class="episode-count" id="episode-count">Loading...</div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search-input" placeholder="Search episodes by title, topic, guest..." oninput="filterEpisodes()" />
+  </div>
+  <div class="tags-row" id="tags-row">
+    <button class="tag-btn active" onclick="setTag('all', this)">All</button>
+  </div>
+  <div class="results-info" id="results-info"></div>
+</div>
+
+<div class="episodes-container">
+  <div class="episodes-grid" id="episodes-grid">
+    <div class="no-results"><div class="no-results-title">Loading...</div></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <a href="index.html" class="footer-back">← Back to Home</a>
+    <div class="footer-copy">© 2026 Data Center News Show | datacenternews.show</div>
+  </div>
+</footer>
+
+<script>
+  const STORAGE_KEY = 'dcnews_site_data';
+  let allEpisodes = [];
+  let activeTag = 'all';
+  let searchQuery = '';
+
+  function loadData() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : { episodes: [] };
+    } catch(e) { return { episodes: [] }; }
+  }
+
+  function getAllTags(episodes) {
+    const tags = new Set();
+    episodes.forEach(ep => { if (ep.tag) tags.add(ep.tag.trim()); });
+    return Array.from(tags).sort();
+  }
+
+  function setTag(tag, btn) {
+    activeTag = tag;
+    document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterEpisodes();
+  }
+
+  function filterEpisodes() {
+    searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+    let filtered = allEpisodes;
+
+    if (activeTag !== 'all') {
+      filtered = filtered.filter(ep => ep.tag && ep.tag.trim() === activeTag);
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter(ep =>
+        (ep.title || '').toLowerCase().includes(searchQuery) ||
+        (ep.description || '').toLowerCase().includes(searchQuery) ||
+        (ep.tag || '').toLowerCase().includes(searchQuery) ||
+        (ep.num || '').toLowerCase().includes(searchQuery)
+      );
+    }
+
+    renderGrid(filtered);
+    document.getElementById('results-info').textContent =
+      filtered.length === allEpisodes.length
+        ? `${allEpisodes.length} episodes`
+        : `${filtered.length} of ${allEpisodes.length} episodes`;
+  }
+
+  function renderGrid(episodes) {
+    const grid = document.getElementById('episodes-grid');
+    if (episodes.length === 0) {
+      grid.innerHTML = `
+        <div class="no-results">
+          <div class="no-results-title">No Episodes Found</div>
+          <p>Try a different search term or tag.</p>
+        </div>`;
+      return;
+    }
+    grid.innerHTML = episodes.map((ep, i) => `
+      <a class="episode-card" href="${ep.url || '#'}" target="_blank">
+        <div class="ep-meta">
+          ${ep.num ? `<span class="ep-num">${ep.num}</span>` : ''}
+          ${ep.tag ? `<span class="ep-tag-pill">${ep.tag}</span>` : ''}
+          ${ep.date ? `<span class="ep-date">${ep.date}</span>` : ''}
+        </div>
+        <div class="ep-title">${ep.title}</div>
+        ${ep.description ? `<div class="ep-desc">${ep.description}</div>` : ''}
+        ${ep.duration ? `<div class="ep-duration">${ep.duration}</div>` : ''}
+      </a>
+    `).join('');
+  }
+
+  function init() {
+    const data = loadData();
+    allEpisodes = data.episodes || [];
+
+    // Update count
+    document.getElementById('episode-count').textContent =
+      allEpisodes.length === 0 ? 'Episodes coming soon' : `${allEpisodes.length} episodes`;
+
+    // Build tag filters
+    const tags = getAllTags(allEpisodes);
+    const tagsRow = document.getElementById('tags-row');
+    tagsRow.innerHTML = `<button class="tag-btn active" onclick="setTag('all', this)">All</button>` +
+      tags.map(t => `<button class="tag-btn" onclick="setTag('${t}', this)">${t}</button>`).join('');
+
+    if (allEpisodes.length === 0) {
+      document.getElementById('episodes-grid').innerHTML = `
+        <div style="grid-column:1/-1">
+          <div class="empty-state">
+            <div class="empty-state-title">Episodes Coming Soon</div>
+            <p>We're loading up the full archive. Check back shortly or <a href="index.html#newsletter">subscribe to the newsletter</a> to get notified.</p>
+            <a href="index.html#live" style="display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:var(--black);padding:12px 28px;font-weight:700;font-size:13px;text-decoration:none;letter-spacing:0.06em;">Watch Live Every Thursday ↗</a>
+          </div>
+        </div>`;
+      document.getElementById('results-info').textContent = '';
+      return;
+    }
+
+    filterEpisodes();
+    document.getElementById('results-info').textContent = `${allEpisodes.length} episodes`;
+  }
+
+  init();
+</script>
+</body>
+</html>

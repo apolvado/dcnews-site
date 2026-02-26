@@ -150,6 +150,26 @@
     .add-episode-form { background: var(--dark); border: 1px solid var(--border); padding: 24px; margin-bottom: 24px; display: none; }
     .add-episode-form.open { display: block; }
 
+    .bulk-card { background: var(--dark); border: 1px solid var(--border); padding: 20px 24px; margin-bottom: 8px; display: grid; grid-template-columns: 32px 1fr; gap: 16px; align-items: start; transition: border-color 0.2s; }
+    .bulk-card.selected { border-color: var(--accent); }
+    .bulk-card.error { border-color: rgba(255,68,68,0.4); opacity: 0.6; }
+    .bulk-card.loading { opacity: 0.5; }
+    .bulk-checkbox { width: 18px; height: 18px; accent-color: var(--accent); cursor: pointer; margin-top: 3px; }
+    .bulk-info { display: flex; flex-direction: column; gap: 8px; }
+    .bulk-title-row { display: flex; gap: 12px; align-items: flex-start; flex-wrap: wrap; }
+    .bulk-title-input { flex: 1; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--white); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; padding: 4px 0; outline: none; min-width: 200px; }
+    .bulk-title-input:focus { border-bottom-color: var(--accent); }
+    .bulk-meta { display: flex; gap: 12px; flex-wrap: wrap; }
+    .bulk-meta input { background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 5px 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; outline: none; width: 130px; }
+    .bulk-meta input:focus { border-color: var(--accent); }
+    .bulk-desc-input { width: 100%; background: var(--panel); border: 1px solid var(--border); color: var(--text); padding: 8px 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; resize: vertical; }
+    .bulk-desc-input:focus { border-color: var(--accent); }
+    .bulk-url { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 400px; }
+    .bulk-error-msg { font-size: 12px; color: #ff5555; }
+    .bulk-progress { background: var(--dark); border: 1px solid var(--border); padding: 16px 20px; margin-bottom: 16px; }
+    .progress-bar-wrap { background: var(--border); height: 4px; margin-top: 10px; }
+    .progress-bar-fill { background: var(--accent); height: 4px; transition: width 0.3s; }
+
     input[type="password"] { font-family: 'JetBrains Mono', monospace; letter-spacing: 0.2em; }
   </style>
 </head>
@@ -186,6 +206,7 @@
       <div class="sidebar-label">Content</div>
       <div class="sidebar-section">
         <button class="nav-item active" onclick="showPage('episodes', this)"><span class="icon">🎙</span> Episodes</button>
+        <button class="nav-item" onclick="showPage('bulk', this)"><span class="icon">⚡</span> Bulk Import</button>
         <button class="nav-item" onclick="showPage('sponsors', this)"><span class="icon">🏷</span> Sponsors</button>
         <button class="nav-item" onclick="showPage('platforms', this)"><span class="icon">📡</span> Platforms</button>
       </div>
@@ -247,6 +268,35 @@
 
         <hr class="divider" />
         <div id="episodes-list"></div>
+      </div>
+
+      <!-- BULK IMPORT PAGE -->
+      <div class="page" id="page-bulk">
+        <div class="page-title">Bulk Import</div>
+        <div class="page-sub">Paste up to 82 YouTube URLs — one per line — and AI will fetch the details for all of them automatically.</div>
+
+        <div class="card">
+          <div class="card-title">Step 1 — Paste Your YouTube URLs</div>
+          <div class="field">
+            <label>One YouTube URL per line</label>
+            <textarea id="bulk-urls" rows="12" placeholder="https://youtube.com/watch?v=abc123&#10;https://youtube.com/watch?v=def456&#10;https://youtube.com/watch?v=ghi789&#10;..."></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="startBulkImport()" id="bulk-import-btn">⚡ Import All URLs</button>
+            <span id="bulk-status" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)"></span>
+          </div>
+        </div>
+
+        <div id="bulk-results" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.15em;text-transform:uppercase">Step 2 — Review &amp; Save</div>
+            <div style="display:flex;gap:12px">
+              <button class="btn btn-ghost btn-sm" onclick="selectAllBulk()">Select All</button>
+              <button class="btn btn-accent" onclick="saveSelectedBulk()" id="save-bulk-btn">Save Selected Episodes</button>
+            </div>
+          </div>
+          <div id="bulk-cards"></div>
+        </div>
       </div>
 
       <!-- SPONSORS PAGE -->
@@ -400,6 +450,7 @@
     document.getElementById('page-' + name).classList.add('active');
     btn.classList.add('active');
     if (name === 'episodes') renderEpisodesList();
+    if (name === 'bulk') { document.getElementById('bulk-results').style.display = 'none'; }
     if (name === 'sponsors') renderSponsorAdmin();
     if (name === 'platforms') loadPlatformFields();
     if (name === 'newsletter') loadNewsletterFields();
@@ -418,7 +469,154 @@
     renderEpisodesList();
   }
 
-  // ─── YOUTUBE AUTO-IMPORT ──────────────────────────────────────────
+  // ─── BULK IMPORT ──────────────────────────────────────────────────
+  let bulkResults = [];
+
+  async function startBulkImport() {
+    const raw = document.getElementById('bulk-urls').value.trim();
+    if (!raw) { toast('Paste some YouTube URLs first', true); return; }
+
+    const urls = raw.split('\n').map(u => u.trim()).filter(u => u && u.includes('youtube'));
+    if (urls.length === 0) { toast('No valid YouTube URLs found', true); return; }
+
+    const btn = document.getElementById('bulk-import-btn');
+    const status = document.getElementById('bulk-status');
+    btn.disabled = true;
+
+    // Show progress
+    document.getElementById('bulk-results').style.display = 'block';
+    document.getElementById('bulk-cards').innerHTML = `
+      <div class="bulk-progress">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)" id="bulk-progress-text">Starting import of ${urls.length} episodes...</div>
+        <div class="progress-bar-wrap"><div class="progress-bar-fill" id="bulk-progress-bar" style="width:0%"></div></div>
+      </div>`;
+
+    bulkResults = [];
+
+    for (let i = 0; i < urls.length; i++) {
+      const url = urls[i];
+      document.getElementById('bulk-progress-text').textContent = `Importing ${i+1} of ${urls.length}: ${url.substring(0, 50)}...`;
+      document.getElementById('bulk-progress-bar').style.width = `${Math.round((i/urls.length)*100)}%`;
+      status.textContent = `${i+1}/${urls.length}`;
+
+      try {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 800,
+            tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+            messages: [{
+              role: 'user',
+              content: `Search for this YouTube video and extract its details: ${url}
+Return ONLY a JSON object, no other text:
+{"title":"full video title","description":"2-3 sentence summary for data center industry audience","date":"month year e.g. Feb 2026","duration":"e.g. 42 MIN","tag":"one of: Energy, AI, Capital, Environment, Infrastructure, Policy, Technology"}`
+            }]
+          })
+        });
+        const data = await response.json();
+        const textBlock = data.content && data.content.find(b => b.type === 'text');
+        if (!textBlock) throw new Error('No response');
+        const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) throw new Error('Parse failed');
+        const info = JSON.parse(jsonMatch[0]);
+        bulkResults.push({ url, ...info, status: 'ok', id: Date.now() + i });
+      } catch(e) {
+        bulkResults.push({ url, title: '', status: 'error', id: Date.now() + i });
+      }
+
+      // Small delay to avoid rate limits
+      if (i < urls.length - 1) await new Promise(r => setTimeout(r, 800));
+    }
+
+    document.getElementById('bulk-progress-bar').style.width = '100%';
+    document.getElementById('bulk-progress-text').textContent = `Done! ${bulkResults.filter(r=>r.status==='ok').length} of ${urls.length} imported successfully.`;
+
+    renderBulkCards();
+    btn.disabled = false;
+    status.textContent = '';
+    toast(`Imported ${bulkResults.filter(r=>r.status==='ok').length} episodes — review and save!`);
+  }
+
+  function renderBulkCards() {
+    const container = document.getElementById('bulk-cards');
+    const progressEl = container.querySelector('.bulk-progress');
+    
+    const cardsHTML = bulkResults.map((r, i) => `
+      <div class="bulk-card ${r.status === 'error' ? 'error' : 'selected'}" id="bulk-card-${i}">
+        <input type="checkbox" class="bulk-checkbox" id="bulk-check-${i}" ${r.status !== 'error' ? 'checked' : ''} onchange="toggleBulkCard(${i})" />
+        <div class="bulk-info">
+          ${r.status === 'error' 
+            ? `<div class="bulk-error-msg">✗ Could not import — fill in manually or skip</div>`
+            : ''}
+          <div class="bulk-title-row">
+            <input type="text" class="bulk-title-input" id="bulk-title-${i}" value="${r.title || ''}" placeholder="Episode title" />
+          </div>
+          <div class="bulk-meta">
+            <input type="text" placeholder="EP 001" id="bulk-num-${i}" value="${r.num || ''}" />
+            <input type="text" placeholder="Tag" id="bulk-tag-${i}" value="${r.tag || ''}" />
+            <input type="text" placeholder="Feb 2026" id="bulk-date-${i}" value="${r.date || ''}" />
+            <input type="text" placeholder="42 MIN" id="bulk-dur-${i}" value="${r.duration || ''}" />
+          </div>
+          <textarea class="bulk-desc-input" rows="2" id="bulk-desc-${i}" placeholder="Description...">${r.description || ''}</textarea>
+          <div class="bulk-url">${r.url}</div>
+        </div>
+      </div>
+    `).join('');
+
+    container.innerHTML = (progressEl ? progressEl.outerHTML : '') + cardsHTML;
+  }
+
+  function toggleBulkCard(i) {
+    const card = document.getElementById(`bulk-card-${i}`);
+    const checked = document.getElementById(`bulk-check-${i}`).checked;
+    card.classList.toggle('selected', checked);
+  }
+
+  function selectAllBulk() {
+    bulkResults.forEach((r, i) => {
+      if (r.status !== 'error') {
+        document.getElementById(`bulk-check-${i}`).checked = true;
+        document.getElementById(`bulk-card-${i}`).classList.add('selected');
+      }
+    });
+  }
+
+  function saveSelectedBulk() {
+    const data = loadData();
+    let saved = 0;
+    
+    // Collect selected in reverse so newest ends up first after unshift
+    const selected = [];
+    bulkResults.forEach((r, i) => {
+      const checked = document.getElementById(`bulk-check-${i}`)?.checked;
+      const title = document.getElementById(`bulk-title-${i}`)?.value.trim();
+      if (checked && title) {
+        selected.push({
+          id: r.id || Date.now() + i,
+          num: document.getElementById(`bulk-num-${i}`)?.value.trim() || '',
+          tag: document.getElementById(`bulk-tag-${i}`)?.value.trim() || '',
+          title,
+          description: document.getElementById(`bulk-desc-${i}`)?.value.trim() || '',
+          url: r.url,
+          duration: document.getElementById(`bulk-dur-${i}`)?.value.trim() || '',
+          date: document.getElementById(`bulk-date-${i}`)?.value.trim() || ''
+        });
+        saved++;
+      }
+    });
+
+    // Add to beginning of episodes list (newest first)
+    data.episodes = [...selected.reverse(), ...data.episodes];
+    saveData(data);
+    toast(`${saved} episodes saved!`);
+    document.getElementById('bulk-urls').value = '';
+    document.getElementById('bulk-results').style.display = 'none';
+    bulkResults = [];
+  }
+
+
   async function importFromYouTube() {
     const url = document.getElementById('yt-import-url').value.trim();
     if (!url || !url.includes('youtube')) { toast('Please enter a valid YouTube URL', true); return; }
