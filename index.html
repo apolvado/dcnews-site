@@ -116,6 +116,30 @@
     .footer-logo span { color: var(--accent); }
     .footer-copy { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); }
 
+    /* WATCH LIVE */
+    .live-section { position: relative; z-index: 1; background: var(--dark); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .live-inner { max-width: 1200px; margin: 0 auto; padding: 60px 40px; }
+    .live-header { display: flex; align-items: center; gap: 20px; margin-bottom: 32px; flex-wrap: wrap; }
+    .live-badge { display: flex; align-items: center; gap: 8px; background: rgba(255,0,0,0.15); border: 1px solid rgba(255,0,0,0.4); padding: 6px 14px; }
+    .live-dot { width: 8px; height: 8px; background: #ff3333; border-radius: 50%; animation: pulse-red 1.2s ease-in-out infinite; }
+    @keyframes pulse-red { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.5; transform:scale(1.4); } }
+    .live-badge-text { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #ff5555; letter-spacing: 0.15em; font-weight: 700; }
+    .offline-badge { background: rgba(0,212,255,0.08); border: 1px solid rgba(0,212,255,0.2); }
+    .offline-badge .live-dot { background: var(--accent); animation: pulse-blue 2s ease-in-out infinite; }
+    @keyframes pulse-blue { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+    .offline-badge .live-badge-text { color: var(--accent); }
+    .live-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--white); letter-spacing: 0.05em; }
+    .live-schedule { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-left: auto; }
+    .live-player { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border: 1px solid var(--border); overflow: hidden; }
+    .live-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .live-offline-player { position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border: 1px solid var(--border); overflow: hidden; }
+    .live-offline-player iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
+    .countdown-box { margin-top: 20px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .countdown-label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+    .countdown-timer { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--accent); letter-spacing: 0.08em; }
+    .live-cta { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: var(--black); padding: 10px 24px; font-weight: 700; font-size: 13px; text-decoration: none; letter-spacing: 0.06em; margin-top: 20px; transition: background 0.2s; }
+    .live-cta:hover { background: #00b8e0; }
+
     @media (max-width: 768px) {
       nav { padding: 0 20px; }
       .nav-links { display: none; }
@@ -144,6 +168,7 @@
 <nav>
   <a href="#" class="nav-logo">DATA CENTER<span>NEWS</span></a>
   <ul class="nav-links">
+    <li><a href="#live" id="nav-live">Watch Live</a></li>
     <li><a href="#episodes">Episodes</a></li>
     <li><a href="#newsletter">Newsletter</a></li>
     <li><a href="#sponsors">Sponsors</a></li>
@@ -171,7 +196,23 @@
   <div class="stat"><div class="stat-num">0%</div><div class="stat-label">Fluff</div></div>
 </div>
 
-<section id="episodes">
+<!-- WATCH LIVE -->
+<div class="live-section" id="live">
+  <div class="live-inner">
+    <div class="live-header">
+      <div class="live-badge" id="live-badge">
+        <div class="live-dot"></div>
+        <div class="live-badge-text" id="live-badge-text">LIVE NOW</div>
+      </div>
+      <div class="live-title" id="live-title">Watch Live</div>
+      <div class="live-schedule">Every Thursday · 1:30 PM CT</div>
+    </div>
+    <div id="live-player-container"></div>
+    <div id="live-footer"></div>
+  </div>
+</div>
+
+
   <div class="section-header">
     <span class="section-num">01</span>
     <h2 class="section-title">Latest Episodes</h2>
@@ -338,6 +379,133 @@
     form.action = data.substackUrl || 'https://datacenternews.substack.com/subscribe';
     form.method = 'GET';
   }
+
+  // ─── LIVE STREAM ─────────────────────────────────────────────────
+  const YT_CHANNEL_ID = 'UCdcnewsshow'; // fallback
+  const YT_HANDLE = 'dcnewsshow';
+  const LIVE_DAY = 4;        // Thursday (0=Sun, 4=Thu)
+  const LIVE_HOUR_CT = 13;   // 1 PM CT (CST = UTC-6, CDT = UTC-5)
+  const LIVE_MINUTE = 30;
+  const LIVE_DURATION_MINS = 90; // assume show runs ~90 min
+
+  function getCTOffset() {
+    // Approximate CST/CDT offset
+    const jan = new Date(new Date().getFullYear(), 0, 1).getTimezoneOffset();
+    const jul = new Date(new Date().getFullYear(), 6, 1).getTimezoneOffset();
+    const isDST = new Date().getTimezoneOffset() < Math.max(jan, jul);
+    return isDST ? 5 : 6; // CDT = UTC-5, CST = UTC-6
+  }
+
+  function isLiveNow() {
+    const now = new Date();
+    const ctOffset = getCTOffset();
+    const ctNow = new Date(now.getTime() - ctOffset * 60 * 60 * 1000);
+    const day = ctNow.getUTCDay();
+    const hour = ctNow.getUTCHours();
+    const min = ctNow.getUTCMinutes();
+    const totalMins = hour * 60 + min;
+    const liveStart = LIVE_HOUR_CT * 60 + LIVE_MINUTE;
+    const liveEnd = liveStart + LIVE_DURATION_MINS;
+    return day === LIVE_DAY && totalMins >= liveStart && totalMins < liveEnd;
+  }
+
+  function getNextLive() {
+    const now = new Date();
+    const ctOffset = getCTOffset();
+    const ctNow = new Date(now.getTime() - ctOffset * 60 * 60 * 1000);
+    let daysUntil = (LIVE_DAY - ctNow.getUTCDay() + 7) % 7;
+    const todayMins = ctNow.getUTCHours() * 60 + ctNow.getUTCMinutes();
+    const liveStartMins = LIVE_HOUR_CT * 60 + LIVE_MINUTE;
+    if (daysUntil === 0 && todayMins >= liveStartMins + LIVE_DURATION_MINS) daysUntil = 7;
+    const next = new Date(ctNow);
+    next.setUTCDate(next.getUTCDate() + daysUntil);
+    next.setUTCHours(LIVE_HOUR_CT, LIVE_MINUTE, 0, 0);
+    return new Date(next.getTime() + ctOffset * 60 * 60 * 1000);
+  }
+
+  function formatCountdown(ms) {
+    const total = Math.floor(ms / 1000);
+    const d = Math.floor(total / 86400);
+    const h = Math.floor((total % 86400) / 3600);
+    const m = Math.floor((total % 3600) / 60);
+    const s = total % 60;
+    if (d > 0) return `${d}D ${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M`;
+    return `${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M ${String(s).padStart(2,'0')}S`;
+  }
+
+  function renderLive() {
+    const badge = document.getElementById('live-badge');
+    const badgeText = document.getElementById('live-badge-text');
+    const titleEl = document.getElementById('live-title');
+    const container = document.getElementById('live-player-container');
+    const footer = document.getElementById('live-footer');
+    const navLive = document.getElementById('nav-live');
+
+    if (isLiveNow()) {
+      // LIVE STATE
+      badge.className = 'live-badge';
+      badgeText.textContent = 'LIVE NOW';
+      titleEl.textContent = 'Watch Live Now';
+      if (navLive) { navLive.style.color = '#ff5555'; navLive.textContent = '● Watch Live'; }
+      container.innerHTML = `
+        <div class="live-player">
+          <iframe src="https://www.youtube.com/embed/live_stream?channel=UCdcnewsshow&autoplay=1"
+            allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>`;
+      footer.innerHTML = `
+        <a class="live-cta" href="https://www.youtube.com/@dcnewsshow/streams" target="_blank">
+          Watch on YouTube ↗
+        </a>`;
+    } else {
+      // OFFLINE STATE — show most recent episode embed + countdown
+      badge.className = 'live-badge offline-badge';
+      badgeText.textContent = 'NEXT SHOW';
+      titleEl.textContent = 'Watch the Latest Episode';
+      if (navLive) navLive.style.color = '';
+
+      // Try to get latest episode from storage
+      const data = loadData();
+      let embedHTML = '';
+      if (data.episodes && data.episodes.length > 0) {
+        const latest = data.episodes[0];
+        const ytMatch = latest.url && latest.url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+        if (ytMatch) {
+          embedHTML = `<div class="live-offline-player">
+            <iframe src="https://www.youtube.com/embed/${ytMatch[1]}" allow="encrypted-media" allowfullscreen></iframe>
+          </div>`;
+        }
+      }
+      if (!embedHTML) {
+        embedHTML = `<div class="live-offline-player">
+          <iframe src="https://www.youtube.com/embed?listType=user_uploads&list=${YT_HANDLE}" allow="encrypted-media" allowfullscreen></iframe>
+        </div>`;
+      }
+      container.innerHTML = embedHTML;
+
+      // Countdown
+      const nextLive = getNextLive();
+      const countdownEl = document.createElement('div');
+      countdownEl.className = 'countdown-box';
+      countdownEl.innerHTML = `
+        <span class="countdown-label">Next live in</span>
+        <span class="countdown-timer" id="countdown-timer"></span>
+        <a class="live-cta" href="https://www.youtube.com/@dcnewsshow/streams" target="_blank" style="margin-top:0">Set Reminder ↗</a>`;
+      footer.innerHTML = '';
+      footer.appendChild(countdownEl);
+
+      function tick() {
+        const ms = nextLive - new Date();
+        const el = document.getElementById('countdown-timer');
+        if (el) el.textContent = ms > 0 ? formatCountdown(ms) : 'Starting soon...';
+      }
+      tick();
+      setInterval(tick, 1000);
+    }
+  }
+
+  renderLive();
+  // Re-check live status every 60 seconds
+  setInterval(() => { renderLive(); }, 60000);
 
   render();
 </script>
