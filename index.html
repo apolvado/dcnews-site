@@ -171,9 +171,7 @@
   <ul class="nav-links">
     <li><a href="#live" id="nav-live">Watch Live</a></li>
     <li><a href="episodes.html">All Episodes</a></li>
-    <li><a href="#latest">Latest</a></li>
     <li><a href="#newsletters">Newsletters</a></li>
-    <li><a href="#newsletter">Subscribe</a></li>
     <li><a href="#sponsors">Sponsors</a></li>
     <li><a href="#about">About</a></li>
     <li><a href="#newsletter" class="nav-cta">Subscribe Free</a></li>
@@ -310,7 +308,7 @@
       ],
       episodes: [],
       sponsors: [{ id:1, name:'', url:'', logo:'' }, { id:2, name:'', url:'', logo:'' }, { id:3, name:'', url:'', logo:'' }],
-      sponsorEmail: 'amy@datacenternews.show',
+      sponsorEmail: 'apolvado@facilimax.com',
       substackUrl: 'https://amypolvado1.substack.com/subscribe'
     };
   }
@@ -373,7 +371,7 @@
 
     // Sponsor email
     const emailLink = document.getElementById('sponsor-email-link');
-    emailLink.href = `mailto:${data.sponsorEmail || 'amy@datacenternews.show'}`;
+    emailLink.href = `mailto:${data.sponsorEmail || 'apolvado@facilimax.com'}`;
 
     // Newsletters
     const nlGrid = document.getElementById('newsletters-grid');
@@ -381,7 +379,7 @@
       if (!data.newsletters || data.newsletters.length === 0) {
         nlGrid.innerHTML = '<div class="no-episodes">Newsletters coming soon. <a href="' + (data.substackUrl || 'https://datacenternews.substack.com') + '" target="_blank" style="color:var(--accent)">Subscribe on Substack →</a></div>';
       } else {
-        nlGrid.innerHTML = data.newsletters.slice(0, 6).map((nl, i) => `
+        nlGrid.innerHTML = data.newsletters.slice(0, 4).map((nl, i) => `
           <a class="episode-card" href="${nl.url || '#'}" target="_blank">
             <div class="ep-meta">
               <span class="ep-tag">Newsletter</span>
