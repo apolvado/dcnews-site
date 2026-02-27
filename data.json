@@ -1,14 +1,52 @@
 {
   "platforms": [
-    { "name": "YouTube", "url": "https://www.youtube.com/@dcnewsshow/streams", "icon": "youtube" },
-    { "name": "Spotify", "url": "https://buzzsprout.com/2599127", "icon": "spotify" },
-    { "name": "Apple Podcasts", "url": "", "icon": "apple" }
+    {
+      "name": "YouTube",
+      "url": "https://www.youtube.com/@dcnewsshow/streams",
+      "icon": "youtube"
+    },
+    {
+      "name": "Spotify",
+      "url": "https://buzzsprout.com/2599127",
+      "icon": "spotify"
+    },
+    {
+      "name": "Apple Podcasts",
+      "url": "",
+      "icon": "apple"
+    }
   ],
-  "episodes": [],
+  "episodes": [
+    {
+      "id": 1772202915430,
+      "num": "EP 082",
+      "tag": "Liquid Cooling, Data Center of the Future",
+      "title": "Data Center News Show - Feb 26, 2026",
+      "description": "We discussed liquid cooling solutions solving the water usage problem of data centers and the data center of the future.",
+      "url": "https://www.youtube.com/watch?v=XXLzAm-mNR0",
+      "duration": "59 MIN",
+      "date": "February 26, 2026"
+    }
+  ],
   "sponsors": [
-    { "id": 1, "name": "", "url": "", "logo": "" },
-    { "id": 2, "name": "", "url": "", "logo": "" },
-    { "id": 3, "name": "", "url": "", "logo": "" }
+    {
+      "id": 1,
+      "name": "",
+      "url": "",
+      "logo": ""
+    },
+    {
+      "id": 2,
+      "name": "",
+      "url": "",
+      "logo": ""
+    },
+    {
+      "id": 3,
+      "name": "",
+      "url": "",
+      "logo": ""
+    }
   ],
   "sponsorEmail": "amy@datacenternews.show",
   "substackUrl": "https://datacenternews.substack.com/subscribe"
