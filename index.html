@@ -283,32 +283,34 @@
 </footer>
 
 <script>
-  // ─── STORAGE KEY ────────────────────────────────────────────────
-  const STORAGE_KEY = 'dcnews_site_data';
+  // ─── GITHUB STORAGE ──────────────────────────────────────────────
+  const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/apolvado/dcnews-site/main/data.json';
+  let _cachedData = null;
 
-  // ─── DEFAULTS ───────────────────────────────────────────────────
-  const DEFAULTS = {
-    platforms: [
-      { name: 'YouTube', url: 'https://youtube.com/@DataCenterNewsShow', icon: 'youtube' },
-      { name: 'Spotify', url: 'https://buzzsprout.com/2599127', icon: 'spotify' },
-      { name: 'Apple Podcasts', url: 'https://buzzsprout.com/2599127', icon: 'apple' }
-    ],
-    episodes: [],
-    sponsors: [
-      { id: 1, name: 'Sponsor Name', url: '#', logo: '' },
-      { id: 2, name: 'Sponsor Name', url: '#', logo: '' },
-      { id: 3, name: '', url: '', logo: '' }
-    ],
-    sponsorEmail: 'amy@datacenternews.show',
-    substackUrl: 'https://datacenternews.substack.com/subscribe'
-  };
-
-  // ─── LOAD DATA ──────────────────────────────────────────────────
-  function loadData() {
+  async function loadData() {
+    if (_cachedData) return _cachedData;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : DEFAULTS;
-    } catch(e) { return DEFAULTS; }
+      const res = await fetch(GITHUB_DATA_URL + '?t=' + Date.now());
+      if (!res.ok) throw new Error('Not found');
+      _cachedData = await res.json();
+      return _cachedData;
+    } catch(e) {
+      return getDefaults();
+    }
+  }
+
+  function getDefaults() {
+    return {
+      platforms: [
+        { name: 'YouTube', url: '', icon: 'youtube' },
+        { name: 'Spotify', url: 'https://buzzsprout.com/2599127', icon: 'spotify' },
+        { name: 'Apple Podcasts', url: '', icon: 'apple' }
+      ],
+      episodes: [],
+      sponsors: [{ id:1, name:'', url:'', logo:'' }, { id:2, name:'', url:'', logo:'' }, { id:3, name:'', url:'', logo:'' }],
+      sponsorEmail: 'amy@datacenternews.show',
+      substackUrl: 'https://datacenternews.substack.com/subscribe'
+    };
   }
 
   // ─── ICONS ──────────────────────────────────────────────────────
@@ -319,8 +321,8 @@
   };
 
   // ─── RENDER ─────────────────────────────────────────────────────
-  function render() {
-    const data = loadData();
+  async function render() {
+    const data = await loadData();
 
     // Platform buttons
     const platformEl = document.getElementById('platform-links');
@@ -430,7 +432,7 @@
     return `${String(h).padStart(2,'0')}H ${String(m).padStart(2,'0')}M ${String(s).padStart(2,'0')}S`;
   }
 
-  function renderLive() {
+  async function renderLive() {
     const badge = document.getElementById('live-badge');
     const badgeText = document.getElementById('live-badge-text');
     const titleEl = document.getElementById('live-title');
@@ -461,7 +463,7 @@
       if (navLive) navLive.style.color = '';
 
       // Try to get latest episode from storage
-      const data = loadData();
+      const data = await loadData();
       let embedHTML = '';
       if (data.episodes && data.episodes.length > 0) {
         const latest = data.episodes[0];

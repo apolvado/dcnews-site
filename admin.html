@@ -375,46 +375,87 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  // ─── STORAGE ─────────────────────────────────────────────────────
-  const STORAGE_KEY = 'dcnews_site_data';
-  const PW_KEY = 'dcnews_admin_pw';
-  const SESSION_KEY = 'dcnews_session';
-  const DEFAULT_PW = 'DCNews2026!';
 
-  function loadData() {
+<script>
+  // ─── GITHUB STORAGE CONFIG ───────────────────────────────────────
+  const GITHUB_TOKEN = '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';
+  const GITHUB_REPO = 'apolvado/dcnews-site';
+  const GITHUB_FILE = 'data.json';
+  const GITHUB_API  = `https://api.github.com/repos/${GITHUB_REPO}/contents/${GITHUB_FILE}`;
+
+  const PW_KEY      = 'dcnews_admin_pw';
+  const SESSION_KEY = 'dcnews_session';
+  const DEFAULT_PW  = 'DCNews2026!';
+
+  let _cachedData = null;
+  let _fileSha    = null;
+
+  async function loadData() {
+    if (_cachedData) return _cachedData;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : getDefaults();
-    } catch(e) { return getDefaults(); }
+      const res = await fetch(GITHUB_API + '?t=' + Date.now(), {
+        headers: { Authorization: `token ${GITHUB_TOKEN}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      if (res.status === 404) {
+        _cachedData = getDefaults();
+        return _cachedData;
+      }
+      const json = await res.json();
+      _fileSha = json.sha;
+      _cachedData = JSON.parse(atob(json.content.replace(/\n/g,'')));
+      return _cachedData;
+    } catch(e) {
+      console.error('GitHub load error:', e);
+      _cachedData = getDefaults();
+      return _cachedData;
+    }
   }
 
-  function saveData(data) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  async function saveData(data) {
+    _cachedData = data;
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const body = { message: 'Update site data', content };
+    if (_fileSha) body.sha = _fileSha;
+    try {
+      const res = await fetch(GITHUB_API, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${GITHUB_TOKEN}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      const json = await res.json();
+      if (json.content) _fileSha = json.content.sha;
+      if (!res.ok) throw new Error(json.message);
+    } catch(e) {
+      console.error('GitHub save error:', e);
+      toast('Save failed — check your connection', true);
+      throw e;
+    }
   }
 
   function getDefaults() {
     return {
       platforms: [
-        { name: 'YouTube', url: '', icon: 'youtube' },
-        { name: 'Spotify', url: 'https://buzzsprout.com/2599127', icon: 'spotify' },
-        { name: 'Apple Podcasts', url: '', icon: 'apple' }
+        { name: 'YouTube',       url: '',                              icon: 'youtube' },
+        { name: 'Spotify',       url: 'https://buzzsprout.com/2599127', icon: 'spotify' },
+        { name: 'Apple Podcasts',url: '',                              icon: 'apple'   }
       ],
       episodes: [],
       sponsors: [
-        { id: 1, name: '', url: '', logo: '' },
-        { id: 2, name: '', url: '', logo: '' },
-        { id: 3, name: '', url: '', logo: '' }
+        { id:1, name:'', url:'', logo:'' },
+        { id:2, name:'', url:'', logo:'' },
+        { id:3, name:'', url:'', logo:'' }
       ],
       sponsorEmail: 'amy@datacenternews.show',
-      substackUrl: 'https://datacenternews.substack.com/subscribe'
+      substackUrl:  'https://datacenternews.substack.com/subscribe'
     };
   }
 
   // ─── AUTH ─────────────────────────────────────────────────────────
-  function getPassword() {
-    return localStorage.getItem(PW_KEY) || DEFAULT_PW;
-  }
+  function getPassword() { return localStorage.getItem(PW_KEY) || DEFAULT_PW; }
 
   function doLogin() {
     const pw = document.getElementById('password-input').value;
@@ -429,12 +470,8 @@
     }
   }
 
-  function doLogout() {
-    sessionStorage.removeItem(SESSION_KEY);
-    location.reload();
-  }
+  function doLogout() { sessionStorage.removeItem(SESSION_KEY); location.reload(); }
 
-  // Check session on load
   window.addEventListener('DOMContentLoaded', () => {
     if (sessionStorage.getItem(SESSION_KEY)) {
       document.getElementById('login-screen').style.display = 'none';
@@ -449,9 +486,9 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'episodes') renderEpisodesList();
-    if (name === 'bulk') { document.getElementById('bulk-results').style.display = 'none'; }
-    if (name === 'sponsors') renderSponsorAdmin();
+    if (name === 'episodes')  renderEpisodesList();
+    if (name === 'bulk')      { document.getElementById('bulk-results').style.display = 'none'; }
+    if (name === 'sponsors')  renderSponsorAdmin();
     if (name === 'platforms') loadPlatformFields();
     if (name === 'newsletter') loadNewsletterFields();
   }
@@ -461,12 +498,13 @@
     const el = document.getElementById('toast');
     el.textContent = msg;
     el.className = 'toast' + (isError ? ' error' : '') + ' show';
-    setTimeout(() => el.className = 'toast' + (isError ? ' error' : ''), 2500);
+    setTimeout(() => el.className = 'toast' + (isError ? ' error' : ''), 3000);
   }
 
   // ─── INIT ─────────────────────────────────────────────────────────
-  function initAdmin() {
-    renderEpisodesList();
+  async function initAdmin() {
+    toast('Loading data from GitHub...');
+    await renderEpisodesList();
   }
 
   // ─── BULK IMPORT ──────────────────────────────────────────────────
@@ -475,107 +513,87 @@
   async function startBulkImport() {
     const raw = document.getElementById('bulk-urls').value.trim();
     if (!raw) { toast('Paste some YouTube URLs first', true); return; }
-
     const urls = raw.split('\n').map(u => u.trim()).filter(u => u && u.includes('youtube'));
     if (urls.length === 0) { toast('No valid YouTube URLs found', true); return; }
 
     const btn = document.getElementById('bulk-import-btn');
     const status = document.getElementById('bulk-status');
     btn.disabled = true;
-
-    // Show progress
     document.getElementById('bulk-results').style.display = 'block';
     document.getElementById('bulk-cards').innerHTML = `
       <div class="bulk-progress">
         <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent)" id="bulk-progress-text">Starting import of ${urls.length} episodes...</div>
         <div class="progress-bar-wrap"><div class="progress-bar-fill" id="bulk-progress-bar" style="width:0%"></div></div>
       </div>`;
-
     bulkResults = [];
 
     for (let i = 0; i < urls.length; i++) {
       const url = urls[i];
-      document.getElementById('bulk-progress-text').textContent = `Importing ${i+1} of ${urls.length}: ${url.substring(0, 50)}...`;
+      document.getElementById('bulk-progress-text').textContent = `Importing ${i+1} of ${urls.length}: ${url.substring(0,50)}...`;
       document.getElementById('bulk-progress-bar').style.width = `${Math.round((i/urls.length)*100)}%`;
       status.textContent = `${i+1}/${urls.length}`;
-
       try {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 800,
+            model: 'claude-sonnet-4-20250514', max_tokens: 800,
             tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-            messages: [{
-              role: 'user',
-              content: `Search for this YouTube video and extract its details: ${url}
-Return ONLY a JSON object, no other text:
-{"title":"full video title","description":"2-3 sentence summary for data center industry audience","date":"month year e.g. Feb 2026","duration":"e.g. 42 MIN","tag":"one of: Energy, AI, Capital, Environment, Infrastructure, Policy, Technology"}`
-            }]
+            messages: [{ role: 'user', content: `Search for this YouTube video and extract its details: ${url}\nReturn ONLY a JSON object, no other text:\n{"title":"full video title","description":"2-3 sentence summary for data center industry audience","date":"month year e.g. Feb 2026","duration":"e.g. 42 MIN","tag":"one of: Energy, AI, Capital, Environment, Infrastructure, Policy, Technology"}` }]
           })
         });
         const data = await response.json();
         const textBlock = data.content && data.content.find(b => b.type === 'text');
         if (!textBlock) throw new Error('No response');
-        const jsonMatch = textBlock.text.match(/\{[\s\S]*\}/);
+        const jsonMatch = textBlock.text.match(/\{[\s\S]*?\}/);
         if (!jsonMatch) throw new Error('Parse failed');
         const info = JSON.parse(jsonMatch[0]);
         bulkResults.push({ url, ...info, status: 'ok', id: Date.now() + i });
       } catch(e) {
         bulkResults.push({ url, title: '', status: 'error', id: Date.now() + i });
       }
-
-      // Small delay to avoid rate limits
       if (i < urls.length - 1) await new Promise(r => setTimeout(r, 800));
     }
 
     document.getElementById('bulk-progress-bar').style.width = '100%';
-    document.getElementById('bulk-progress-text').textContent = `Done! ${bulkResults.filter(r=>r.status==='ok').length} of ${urls.length} imported successfully.`;
-
+    document.getElementById('bulk-progress-text').textContent = `Done! ${bulkResults.filter(r=>r.status==='ok').length} of ${urls.length} imported.`;
     renderBulkCards();
     btn.disabled = false;
     status.textContent = '';
-    toast(`Imported ${bulkResults.filter(r=>r.status==='ok').length} episodes — review and save!`);
+    toast(`${bulkResults.filter(r=>r.status==='ok').length} episodes ready — review and save!`);
   }
 
   function renderBulkCards() {
     const container = document.getElementById('bulk-cards');
     const progressEl = container.querySelector('.bulk-progress');
-    
     const cardsHTML = bulkResults.map((r, i) => `
-      <div class="bulk-card ${r.status === 'error' ? 'error' : 'selected'}" id="bulk-card-${i}">
-        <input type="checkbox" class="bulk-checkbox" id="bulk-check-${i}" ${r.status !== 'error' ? 'checked' : ''} onchange="toggleBulkCard(${i})" />
+      <div class="bulk-card ${r.status==='error'?'error':'selected'}" id="bulk-card-${i}">
+        <input type="checkbox" class="bulk-checkbox" id="bulk-check-${i}" ${r.status!=='error'?'checked':''} onchange="toggleBulkCard(${i})" />
         <div class="bulk-info">
-          ${r.status === 'error' 
-            ? `<div class="bulk-error-msg">✗ Could not import — fill in manually or skip</div>`
-            : ''}
+          ${r.status==='error'?'<div class="bulk-error-msg">✗ Could not import — fill in manually or skip</div>':''}
           <div class="bulk-title-row">
-            <input type="text" class="bulk-title-input" id="bulk-title-${i}" value="${r.title || ''}" placeholder="Episode title" />
+            <input type="text" class="bulk-title-input" id="bulk-title-${i}" value="${(r.title||'').replace(/"/g,'&quot;')}" placeholder="Episode title" />
           </div>
           <div class="bulk-meta">
-            <input type="text" placeholder="EP 001" id="bulk-num-${i}" value="${r.num || ''}" />
-            <input type="text" placeholder="Tag" id="bulk-tag-${i}" value="${r.tag || ''}" />
-            <input type="text" placeholder="Feb 2026" id="bulk-date-${i}" value="${r.date || ''}" />
-            <input type="text" placeholder="42 MIN" id="bulk-dur-${i}" value="${r.duration || ''}" />
+            <input type="text" placeholder="EP 001" id="bulk-num-${i}" value="${r.num||''}" />
+            <input type="text" placeholder="Tag" id="bulk-tag-${i}" value="${r.tag||''}" />
+            <input type="text" placeholder="Feb 2026" id="bulk-date-${i}" value="${r.date||''}" />
+            <input type="text" placeholder="42 MIN" id="bulk-dur-${i}" value="${r.duration||''}" />
           </div>
-          <textarea class="bulk-desc-input" rows="2" id="bulk-desc-${i}" placeholder="Description...">${r.description || ''}</textarea>
+          <textarea class="bulk-desc-input" rows="2" id="bulk-desc-${i}" placeholder="Description...">${r.description||''}</textarea>
           <div class="bulk-url">${r.url}</div>
         </div>
-      </div>
-    `).join('');
-
+      </div>`).join('');
     container.innerHTML = (progressEl ? progressEl.outerHTML : '') + cardsHTML;
   }
 
   function toggleBulkCard(i) {
     const card = document.getElementById(`bulk-card-${i}`);
-    const checked = document.getElementById(`bulk-check-${i}`).checked;
-    card.classList.toggle('selected', checked);
+    card.classList.toggle('selected', document.getElementById(`bulk-check-${i}`).checked);
   }
 
   function selectAllBulk() {
-    bulkResults.forEach((r, i) => {
+    bulkResults.forEach((r,i) => {
       if (r.status !== 'error') {
         document.getElementById(`bulk-check-${i}`).checked = true;
         document.getElementById(`bulk-card-${i}`).classList.add('selected');
@@ -583,132 +601,101 @@ Return ONLY a JSON object, no other text:
     });
   }
 
-  function saveSelectedBulk() {
-    const data = loadData();
-    let saved = 0;
-    
-    // Collect selected in reverse so newest ends up first after unshift
+  async function saveSelectedBulk() {
+    const btn = document.getElementById('save-bulk-btn');
+    btn.textContent = 'Saving to GitHub...';
+    btn.disabled = true;
+    const data = await loadData();
     const selected = [];
-    bulkResults.forEach((r, i) => {
+    bulkResults.forEach((r,i) => {
       const checked = document.getElementById(`bulk-check-${i}`)?.checked;
-      const title = document.getElementById(`bulk-title-${i}`)?.value.trim();
+      const title   = document.getElementById(`bulk-title-${i}`)?.value.trim();
       if (checked && title) {
         selected.push({
-          id: r.id || Date.now() + i,
-          num: document.getElementById(`bulk-num-${i}`)?.value.trim() || '',
-          tag: document.getElementById(`bulk-tag-${i}`)?.value.trim() || '',
+          id: r.id || Date.now()+i,
+          num:  document.getElementById(`bulk-num-${i}`)?.value.trim()||'',
+          tag:  document.getElementById(`bulk-tag-${i}`)?.value.trim()||'',
           title,
-          description: document.getElementById(`bulk-desc-${i}`)?.value.trim() || '',
+          description: document.getElementById(`bulk-desc-${i}`)?.value.trim()||'',
           url: r.url,
-          duration: document.getElementById(`bulk-dur-${i}`)?.value.trim() || '',
-          date: document.getElementById(`bulk-date-${i}`)?.value.trim() || ''
+          duration: document.getElementById(`bulk-dur-${i}`)?.value.trim()||'',
+          date: document.getElementById(`bulk-date-${i}`)?.value.trim()||''
         });
-        saved++;
       }
     });
-
-    // Add to beginning of episodes list (newest first)
     data.episodes = [...selected.reverse(), ...data.episodes];
-    saveData(data);
-    toast(`${saved} episodes saved!`);
+    await saveData(data);
+    toast(`${selected.length} episodes saved to GitHub!`);
     document.getElementById('bulk-urls').value = '';
     document.getElementById('bulk-results').style.display = 'none';
     bulkResults = [];
+    btn.textContent = 'Save Selected Episodes';
+    btn.disabled = false;
   }
 
-
+  // ─── YOUTUBE AUTO-IMPORT ──────────────────────────────────────────
   async function importFromYouTube() {
     const url = document.getElementById('yt-import-url').value.trim();
     if (!url || !url.includes('youtube')) { toast('Please enter a valid YouTube URL', true); return; }
-
     const btn = document.getElementById('import-btn');
     const status = document.getElementById('import-status');
-    btn.textContent = 'Importing...';
-    btn.disabled = true;
-    status.style.display = 'block';
-    status.style.color = 'var(--accent)';
+    btn.textContent = 'Importing...'; btn.disabled = true;
+    status.style.display = 'block'; status.style.color = 'var(--accent)';
     status.textContent = '⚡ Fetching video details with AI...';
-
     try {
       const response = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1000,
+          model: 'claude-sonnet-4-20250514', max_tokens: 1000,
           tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-          messages: [{
-            role: 'user',
-            content: `Search for this YouTube video and extract its details: ${url}
-            
-Return ONLY a JSON object with these exact fields, no other text:
-{
-  "title": "full video title",
-  "description": "2-3 sentence summary of what the episode covers, written for a data center industry audience",
-  "date": "month and year published e.g. Feb 2026",
-  "duration": "duration in format like 42 MIN",
-  "tag": "one category tag from: Energy, AI, Capital, Environment, Infrastructure, Policy, Technology"
-}`
-          }]
+          messages: [{ role: 'user', content: `Search for this YouTube video and extract its details: ${url}\nReturn ONLY a JSON object with these exact fields, no other text:\n{"title":"full video title","description":"2-3 sentence summary for a data center industry audience","date":"month and year published e.g. Feb 2026","duration":"duration in format like 42 MIN","tag":"one category tag from: Energy, AI, Capital, Environment, Infrastructure, Policy, Technology"}` }]
         })
       });
-
       const data = await response.json();
-      
-      // Extract text from response
       const textBlock = data.content && data.content.find(b => b.type === 'text');
       if (!textBlock) throw new Error('No response');
-
-      // Parse JSON from response
-      const text = textBlock.text;
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      const jsonMatch = textBlock.text.match(/\{[\s\S]*?\}/);
       if (!jsonMatch) throw new Error('Could not parse response');
-      
       const info = JSON.parse(jsonMatch[0]);
-
-      // Fill in the form
-      if (info.title) document.getElementById('new-ep-title').value = info.title;
-      if (info.description) document.getElementById('new-ep-desc').value = info.description;
-      if (info.date) document.getElementById('new-ep-date').value = info.date;
-      if (info.duration) document.getElementById('new-ep-duration').value = info.duration;
-      if (info.tag) document.getElementById('new-ep-tag').value = info.tag;
+      if (info.title)       document.getElementById('new-ep-title').value    = info.title;
+      if (info.description) document.getElementById('new-ep-desc').value     = info.description;
+      if (info.date)        document.getElementById('new-ep-date').value      = info.date;
+      if (info.duration)    document.getElementById('new-ep-duration').value  = info.duration;
+      if (info.tag)         document.getElementById('new-ep-tag').value       = info.tag;
       document.getElementById('new-ep-url').value = url;
-
       status.style.color = 'var(--green)';
       status.textContent = '✓ Details imported! Review and edit below, then save.';
       toast('Episode details imported!');
-
     } catch(err) {
       status.style.color = 'var(--red)';
       status.textContent = '✗ Could not auto-import. Please fill in the details manually.';
       document.getElementById('new-ep-url').value = url;
     }
-
-    btn.textContent = 'Import →';
-    btn.disabled = false;
+    btn.textContent = 'Import →'; btn.disabled = false;
   }
 
-
-  function renderEpisodesList() {
-    const data = loadData();
+  // ─── EPISODES ─────────────────────────────────────────────────────
+  async function renderEpisodesList() {
     const list = document.getElementById('episodes-list');
+    list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">Loading from GitHub...</div>';
+    const data = await loadData();
     if (!data.episodes || data.episodes.length === 0) {
       list.innerHTML = '<div style="color:var(--muted);font-size:13px;padding:20px 0">No episodes yet. Add your first episode above.</div>';
       return;
     }
-    list.innerHTML = data.episodes.map((ep, i) => `
+    list.innerHTML = data.episodes.map((ep,i) => `
       <div class="episode-item">
         <div class="ep-drag">⠿</div>
         <div class="ep-info">
           <div class="ep-item-title">${ep.title}</div>
-          <div class="ep-item-meta">${ep.num || ''} ${ep.tag ? '· ' + ep.tag : ''} ${ep.date ? '· ' + ep.date : ''} ${ep.duration ? '· ' + ep.duration : ''}</div>
+          <div class="ep-item-meta">${ep.num||''} ${ep.tag?'· '+ep.tag:''} ${ep.date?'· '+ep.date:''} ${ep.duration?'· '+ep.duration:''}</div>
         </div>
         <div class="ep-actions">
           <button class="btn btn-ghost btn-sm" onclick="editEpisode(${i})">Edit</button>
           <button class="btn btn-danger btn-sm" onclick="deleteEpisode(${i})">Delete</button>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
   function toggleAddForm() {
@@ -719,166 +706,163 @@ Return ONLY a JSON object with these exact fields, no other text:
   }
 
   function clearAddForm() {
-    ['new-ep-num','new-ep-tag','new-ep-title','new-ep-desc','new-ep-url','new-ep-duration','new-ep-date'].forEach(id => {
-      document.getElementById(id).value = '';
+    ['new-ep-num','new-ep-tag','new-ep-title','new-ep-desc','new-ep-url','new-ep-duration','new-ep-date','yt-import-url'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
     });
+    const status = document.getElementById('import-status');
+    if (status) status.style.display = 'none';
   }
 
-  function addEpisode() {
+  async function addEpisode() {
     const title = document.getElementById('new-ep-title').value.trim();
-    const url = document.getElementById('new-ep-url').value.trim();
+    const url   = document.getElementById('new-ep-url').value.trim();
     if (!title || !url) { toast('Title and URL are required', true); return; }
-
-    const data = loadData();
-    const ep = {
+    const btn = document.getElementById('save-ep-btn');
+    btn.textContent = 'Saving...'; btn.disabled = true;
+    const data = await loadData();
+    data.episodes.unshift({
       id: Date.now(),
-      num: document.getElementById('new-ep-num').value.trim(),
-      tag: document.getElementById('new-ep-tag').value.trim(),
+      num:         document.getElementById('new-ep-num').value.trim(),
+      tag:         document.getElementById('new-ep-tag').value.trim(),
       title,
       description: document.getElementById('new-ep-desc').value.trim(),
       url,
-      duration: document.getElementById('new-ep-duration').value.trim(),
-      date: document.getElementById('new-ep-date').value.trim()
-    };
-    data.episodes.unshift(ep); // newest first
-    saveData(data);
+      duration:    document.getElementById('new-ep-duration').value.trim(),
+      date:        document.getElementById('new-ep-date').value.trim()
+    });
+    await saveData(data);
     clearAddForm();
     document.getElementById('add-episode-form').classList.remove('open');
     document.getElementById('add-btn').textContent = '+ Add New Episode';
+    btn.textContent = 'Save Episode'; btn.disabled = false;
     renderEpisodesList();
-    toast('Episode saved!');
+    toast('Episode saved to GitHub!');
   }
 
-  function deleteEpisode(i) {
+  async function deleteEpisode(i) {
     if (!confirm('Delete this episode?')) return;
-    const data = loadData();
-    data.episodes.splice(i, 1);
-    saveData(data);
+    const data = await loadData();
+    data.episodes.splice(i,1);
+    await saveData(data);
     renderEpisodesList();
     toast('Episode deleted');
   }
 
-  function editEpisode(i) {
-    const data = loadData();
-    const ep = data.episodes[i];
-    // Open form and prefill
+  async function editEpisode(i) {
+    const data = await loadData();
+    const ep   = data.episodes[i];
     document.getElementById('add-episode-form').classList.add('open');
     document.getElementById('add-btn').textContent = '✕ Cancel';
-    document.getElementById('new-ep-num').value = ep.num || '';
-    document.getElementById('new-ep-tag').value = ep.tag || '';
-    document.getElementById('new-ep-title').value = ep.title || '';
-    document.getElementById('new-ep-desc').value = ep.description || '';
-    document.getElementById('new-ep-url').value = ep.url || '';
-    document.getElementById('new-ep-duration').value = ep.duration || '';
-    document.getElementById('new-ep-date').value = ep.date || '';
-    // Change save to update
+    document.getElementById('new-ep-num').value      = ep.num||'';
+    document.getElementById('new-ep-tag').value      = ep.tag||'';
+    document.getElementById('new-ep-title').value    = ep.title||'';
+    document.getElementById('new-ep-desc').value     = ep.description||'';
+    document.getElementById('new-ep-url').value      = ep.url||'';
+    document.getElementById('new-ep-duration').value = ep.duration||'';
+    document.getElementById('new-ep-date').value     = ep.date||'';
     document.getElementById('save-ep-btn').textContent = 'Update Episode';
     document.getElementById('save-ep-btn').onclick = () => updateEpisode(i);
-    document.getElementById('add-episode-form').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('add-episode-form').scrollIntoView({ behavior:'smooth' });
   }
 
-  function updateEpisode(i) {
+  async function updateEpisode(i) {
     const title = document.getElementById('new-ep-title').value.trim();
-    const url = document.getElementById('new-ep-url').value.trim();
+    const url   = document.getElementById('new-ep-url').value.trim();
     if (!title || !url) { toast('Title and URL are required', true); return; }
-    const data = loadData();
-    data.episodes[i] = {
-      ...data.episodes[i],
-      num: document.getElementById('new-ep-num').value.trim(),
-      tag: document.getElementById('new-ep-tag').value.trim(),
-      title,
-      description: document.getElementById('new-ep-desc').value.trim(),
-      url,
-      duration: document.getElementById('new-ep-duration').value.trim(),
+    const btn = document.getElementById('save-ep-btn');
+    btn.textContent = 'Saving...'; btn.disabled = true;
+    const data = await loadData();
+    data.episodes[i] = { ...data.episodes[i],
+      num:         document.getElementById('new-ep-num').value.trim(),
+      tag:         document.getElementById('new-ep-tag').value.trim(),
+      title, description: document.getElementById('new-ep-desc').value.trim(),
+      url, duration: document.getElementById('new-ep-duration').value.trim(),
       date: document.getElementById('new-ep-date').value.trim()
     };
-    saveData(data);
+    await saveData(data);
     clearAddForm();
     document.getElementById('add-episode-form').classList.remove('open');
     document.getElementById('add-btn').textContent = '+ Add New Episode';
     document.getElementById('save-ep-btn').textContent = 'Save Episode';
     document.getElementById('save-ep-btn').onclick = addEpisode;
+    btn.disabled = false;
     renderEpisodesList();
     toast('Episode updated!');
   }
 
   // ─── SPONSORS ─────────────────────────────────────────────────────
-  function renderSponsorAdmin() {
-    const data = loadData();
+  async function renderSponsorAdmin() {
+    const data = await loadData();
     const grid = document.getElementById('sponsor-admin-grid');
     grid.innerHTML = [0,1,2].map(i => {
-      const s = data.sponsors[i] || { name: '', url: '', logo: '' };
-      return `
-        <div class="sponsor-admin-card">
-          <h4>Slot ${i+1}</h4>
-          <div class="field" style="margin-bottom:12px"><label>Sponsor Name</label><input type="text" id="sp-name-${i}" value="${s.name || ''}" placeholder="Leave blank = Available" /></div>
-          <div class="field" style="margin-bottom:12px"><label>Website URL</label><input type="url" id="sp-url-${i}" value="${s.url || ''}" placeholder="https://..." /></div>
-          <div class="field"><label>Logo URL (hosted image)</label><input type="url" id="sp-logo-${i}" value="${s.logo || ''}" placeholder="https://...logo.png" /></div>
-        </div>`;
+      const s = data.sponsors[i] || { name:'', url:'', logo:'' };
+      return `<div class="sponsor-admin-card"><h4>Slot ${i+1}</h4>
+        <div class="field" style="margin-bottom:12px"><label>Sponsor Name</label><input type="text" id="sp-name-${i}" value="${s.name||''}" placeholder="Leave blank = Available" /></div>
+        <div class="field" style="margin-bottom:12px"><label>Website URL</label><input type="url" id="sp-url-${i}" value="${s.url||''}" placeholder="https://..." /></div>
+        <div class="field"><label>Logo URL</label><input type="url" id="sp-logo-${i}" value="${s.logo||''}" placeholder="https://...logo.png" /></div>
+      </div>`;
     }).join('');
   }
 
-  function saveSponsors() {
-    const data = loadData();
+  async function saveSponsors() {
+    const data = await loadData();
     data.sponsors = [0,1,2].map(i => ({
       id: i+1,
       name: document.getElementById(`sp-name-${i}`).value.trim(),
-      url: document.getElementById(`sp-url-${i}`).value.trim(),
+      url:  document.getElementById(`sp-url-${i}`).value.trim(),
       logo: document.getElementById(`sp-logo-${i}`).value.trim()
     }));
-    saveData(data);
-    toast('Sponsors saved!');
+    await saveData(data);
+    toast('Sponsors saved to GitHub!');
   }
 
   // ─── PLATFORMS ────────────────────────────────────────────────────
-  function loadPlatformFields() {
-    const data = loadData();
-    const yt = data.platforms.find(p => p.icon === 'youtube');
-    const sp = data.platforms.find(p => p.icon === 'spotify');
-    const ap = data.platforms.find(p => p.icon === 'apple');
+  async function loadPlatformFields() {
+    const data = await loadData();
+    const yt = data.platforms.find(p => p.icon==='youtube');
+    const sp = data.platforms.find(p => p.icon==='spotify');
+    const ap = data.platforms.find(p => p.icon==='apple');
     document.getElementById('url-youtube').value = yt ? yt.url : '';
     document.getElementById('url-spotify').value = sp ? sp.url : '';
-    document.getElementById('url-apple').value = ap ? ap.url : '';
+    document.getElementById('url-apple').value   = ap ? ap.url : '';
   }
 
-  function savePlatforms() {
-    const data = loadData();
+  async function savePlatforms() {
+    const data = await loadData();
     data.platforms = [
-      { name: 'YouTube', url: document.getElementById('url-youtube').value.trim(), icon: 'youtube' },
-      { name: 'Spotify', url: document.getElementById('url-spotify').value.trim(), icon: 'spotify' },
-      { name: 'Apple Podcasts', url: document.getElementById('url-apple').value.trim(), icon: 'apple' }
+      { name:'YouTube',        url: document.getElementById('url-youtube').value.trim(), icon:'youtube' },
+      { name:'Spotify',        url: document.getElementById('url-spotify').value.trim(), icon:'spotify' },
+      { name:'Apple Podcasts', url: document.getElementById('url-apple').value.trim(),   icon:'apple'   }
     ].filter(p => p.url);
-    saveData(data);
-    toast('Platform links saved!');
+    await saveData(data);
+    toast('Platform links saved to GitHub!');
   }
 
   // ─── NEWSLETTER ───────────────────────────────────────────────────
-  function loadNewsletterFields() {
-    const data = loadData();
-    document.getElementById('substack-url').value = data.substackUrl || '';
-    document.getElementById('sponsor-email').value = data.sponsorEmail || '';
+  async function loadNewsletterFields() {
+    const data = await loadData();
+    document.getElementById('substack-url').value  = data.substackUrl||'';
+    document.getElementById('sponsor-email').value = data.sponsorEmail||'';
   }
 
-  function saveNewsletter() {
-    const data = loadData();
-    data.substackUrl = document.getElementById('substack-url').value.trim();
+  async function saveNewsletter() {
+    const data = await loadData();
+    data.substackUrl  = document.getElementById('substack-url').value.trim();
     data.sponsorEmail = document.getElementById('sponsor-email').value.trim();
-    saveData(data);
-    toast('Newsletter settings saved!');
+    await saveData(data);
+    toast('Newsletter settings saved to GitHub!');
   }
 
   // ─── PASSWORD ─────────────────────────────────────────────────────
   function changePassword() {
-    const cur = document.getElementById('current-pw').value;
-    const nw = document.getElementById('new-pw').value;
+    const cur  = document.getElementById('current-pw').value;
+    const nw   = document.getElementById('new-pw').value;
     const conf = document.getElementById('confirm-pw').value;
-    if (cur !== getPassword()) { toast('Current password is wrong', true); return; }
-    if (!nw || nw.length < 6) { toast('New password must be 6+ characters', true); return; }
-    if (nw !== conf) { toast('Passwords do not match', true); return; }
+    if (cur !== getPassword())    { toast('Current password is wrong', true); return; }
+    if (!nw || nw.length < 6)     { toast('New password must be 6+ characters', true); return; }
+    if (nw !== conf)              { toast('Passwords do not match', true); return; }
     localStorage.setItem(PW_KEY, nw);
-    document.getElementById('current-pw').value = '';
-    document.getElementById('new-pw').value = '';
-    document.getElementById('confirm-pw').value = '';
+    ['current-pw','new-pw','confirm-pw'].forEach(id => document.getElementById(id).value = '');
     toast('Password updated!');
   }
 </script>

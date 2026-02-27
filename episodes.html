@@ -146,15 +146,16 @@
 </footer>
 
 <script>
-  const STORAGE_KEY = 'dcnews_site_data';
+  const GITHUB_DATA_URL = 'https://raw.githubusercontent.com/apolvado/dcnews-site/main/data.json';
   let allEpisodes = [];
   let activeTag = 'all';
   let searchQuery = '';
 
-  function loadData() {
+  async function loadData() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : { episodes: [] };
+      const res = await fetch(GITHUB_DATA_URL + '?t=' + Date.now());
+      if (!res.ok) throw new Error('Not found');
+      return await res.json();
     } catch(e) { return { episodes: [] }; }
   }
 
@@ -219,8 +220,8 @@
     `).join('');
   }
 
-  function init() {
-    const data = loadData();
+  async function init() {
+    const data = await loadData();
     allEpisodes = data.episodes || [];
 
     // Update count
