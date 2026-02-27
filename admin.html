@@ -206,6 +206,7 @@
       <div class="sidebar-label">Content</div>
       <div class="sidebar-section">
         <button class="nav-item active" onclick="showPage('episodes', this)"><span class="icon">🎙</span> Episodes</button>
+        <button class="nav-item" onclick="showPage('newsletters', this)"><span class="icon">📰</span> Newsletters</button>
         <button class="nav-item" onclick="showPage('bulk', this)"><span class="icon">⚡</span> Bulk Import</button>
         <button class="nav-item" onclick="showPage('sponsors', this)"><span class="icon">🏷</span> Sponsors</button>
         <button class="nav-item" onclick="showPage('platforms', this)"><span class="icon">📡</span> Platforms</button>
@@ -268,6 +269,33 @@
 
         <hr class="divider" />
         <div id="episodes-list"></div>
+      </div>
+
+      <!-- NEWSLETTERS PAGE -->
+      <div class="page" id="page-newsletters">
+        <div class="page-title">Newsletters</div>
+        <div class="page-sub">Add links to your Substack newsletters so visitors can find them on the site.</div>
+
+        <div class="card">
+          <div class="card-title">Add Newsletter</div>
+          <div class="form-row">
+            <div class="field"><label>Title</label><input type="text" id="nl-title" placeholder="Your newsletter issue title" /></div>
+            <div class="field"><label>Substack URL</label><input type="url" id="nl-url" placeholder="https://datacenternews.substack.com/p/your-issue" /></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Date</label><input type="text" id="nl-date" placeholder="Feb 2026" /></div>
+            <div class="field"><label>Description</label><input type="text" id="nl-desc" placeholder="Brief summary..." /></div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="addNewsletter()" id="nl-save-btn">Add Newsletter</button>
+            <button class="btn btn-ghost" onclick="cancelNlEdit()" id="nl-cancel-btn" style="display:none">Cancel</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:24px">
+          <div class="card-title">Your Newsletters</div>
+          <div id="newsletters-list"></div>
+        </div>
       </div>
 
       <!-- BULK IMPORT PAGE -->
@@ -486,11 +514,12 @@
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     document.getElementById('page-' + name).classList.add('active');
     btn.classList.add('active');
-    if (name === 'episodes')  renderEpisodesList();
-    if (name === 'bulk')      { document.getElementById('bulk-results').style.display = 'none'; }
-    if (name === 'sponsors')  renderSponsorAdmin();
-    if (name === 'platforms') loadPlatformFields();
-    if (name === 'newsletter') loadNewsletterFields();
+    if (name === 'episodes')    renderEpisodesList();
+    if (name === 'newsletters') renderNewslettersList();
+    if (name === 'bulk')        { document.getElementById('bulk-results').style.display = 'none'; }
+    if (name === 'sponsors')    renderSponsorAdmin();
+    if (name === 'platforms')   loadPlatformFields();
+    if (name === 'newsletter')  loadNewsletterFields();
   }
 
   // ─── TOAST ────────────────────────────────────────────────────────
@@ -505,6 +534,86 @@
   async function initAdmin() {
     toast('Loading data from GitHub...');
     await renderEpisodesList();
+  }
+
+  // ─── NEWSLETTERS ──────────────────────────────────────────────────
+  let editingNlIndex = -1;
+
+  async function renderNewslettersList() {
+    const data = await loadData();
+    const list = document.getElementById('newsletters-list');
+    const newsletters = data.newsletters || [];
+    if (newsletters.length === 0) {
+      list.innerHTML = '<p style="color:var(--muted);font-size:14px;padding:20px 0">No newsletters yet. Add your first one above.</p>';
+      return;
+    }
+    list.innerHTML = newsletters.map((nl, i) => `
+      <div class="episode-item">
+        <div class="episode-item-info">
+          <div class="episode-item-title">${nl.title}</div>
+          <div class="episode-item-meta">${nl.date || ''} ${nl.url ? '· <a href="'+nl.url+'" target="_blank" style="color:var(--accent)">View →</a>' : ''}</div>
+        </div>
+        <div class="episode-item-actions">
+          <button class="btn btn-ghost btn-sm" onclick="editNewsletter(${i})">Edit</button>
+          <button class="btn btn-ghost btn-sm" style="color:#ff5555" onclick="deleteNewsletter(${i})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function addNewsletter() {
+    const title = document.getElementById('nl-title').value.trim();
+    const url   = document.getElementById('nl-url').value.trim();
+    if (!title || !url) { toast('Title and URL are required', true); return; }
+    const data = await loadData();
+    if (!data.newsletters) data.newsletters = [];
+    const nl = {
+      id: Date.now(),
+      title,
+      url,
+      date: document.getElementById('nl-date').value.trim(),
+      description: document.getElementById('nl-desc').value.trim()
+    };
+    if (editingNlIndex >= 0) {
+      data.newsletters[editingNlIndex] = nl;
+      editingNlIndex = -1;
+      document.getElementById('nl-save-btn').textContent = 'Add Newsletter';
+      document.getElementById('nl-cancel-btn').style.display = 'none';
+    } else {
+      data.newsletters.unshift(nl);
+    }
+    await saveData(data);
+    ['nl-title','nl-url','nl-date','nl-desc'].forEach(id => document.getElementById(id).value = '');
+    renderNewslettersList();
+    toast('Newsletter saved!');
+  }
+
+  async function editNewsletter(i) {
+    const data = await loadData();
+    const nl = data.newsletters[i];
+    document.getElementById('nl-title').value = nl.title || '';
+    document.getElementById('nl-url').value   = nl.url   || '';
+    document.getElementById('nl-date').value  = nl.date  || '';
+    document.getElementById('nl-desc').value  = nl.description || '';
+    editingNlIndex = i;
+    document.getElementById('nl-save-btn').textContent = 'Update Newsletter';
+    document.getElementById('nl-cancel-btn').style.display = 'inline-flex';
+  }
+
+  function cancelNlEdit() {
+    editingNlIndex = -1;
+    ['nl-title','nl-url','nl-date','nl-desc'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('nl-save-btn').textContent = 'Add Newsletter';
+    document.getElementById('nl-cancel-btn').style.display = 'none';
+  }
+
+  async function deleteNewsletter(i) {
+    if (!confirm('Delete this newsletter?')) return;
+    const data = await loadData();
+    data.newsletters.splice(i, 1);
+    await saveData(data);
+    renderNewslettersList();
+    toast('Newsletter deleted');
   }
 
   // ─── BULK IMPORT ──────────────────────────────────────────────────
