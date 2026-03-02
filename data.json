@@ -18,6 +18,16 @@
   ],
   "episodes": [
     {
+      "id": 1772495186795,
+      "num": "EP 039",
+      "tag": "PTC, AI Infrastructure",
+      "title": "Data Center News Show - January 15, 2026",
+      "description": "In this episode, we celebrate the first anniversary of the Data Center News Show - focused on data center industry news. The discussion features experts from Supermicro and the Nomad Futurist Foundation, who offer practical advice for attending the Pacific Telecommunications Council (PTC) conference in Hawaii. A significant portion of the conversation addresses the critical power shortage facing the industry, noting that massive energy demands for AI infrastructure are outpacing utility capabilities. The participants explore technical solutions like liquid cooling and onsite power generation while lamenting the long wait times for grid connections. Finally, the group emphasizes the need for better public relations to counter negative perceptions of data centers and highlight their role in driving the global economy.",
+      "url": "https://www.youtube.com/live/jmeyPQQPOBw",
+      "duration": "43 MIN",
+      "date": ""
+    },
+    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
