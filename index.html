@@ -417,9 +417,13 @@
     return isDST ? 5 : 6; // CDT = UTC-5, CST = UTC-6
   }
 
- async function renderLive() {
+async function renderLive() {
 
   const container = document.getElementById("live-player-container");
+  const badge = document.getElementById("live-badge");
+
+  // ✅ ALWAYS start in OFFLINE state
+  badge.style.display = "none";
 
   const API_KEY = "AIzaSyDNkGTgJSttflP-mujnKtBW_iMs6imOzhw";
   const CHANNEL_ID = "UCVqf4LcK7CDz0mFFGAl96mg";
