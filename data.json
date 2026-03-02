@@ -18,6 +18,16 @@
   ],
   "episodes": [
     {
+      "id": 1772464232044,
+      "num": "EP 079",
+      "tag": "Veterans in Data Centers",
+      "title": "Data Center News Show - February 5, 2026",
+      "description": "This episode features a panel discussion focusing on recruiting military veterans into the data center industry. Industry experts emphasize that the sector offers lucrative career paths in fields ranging from physical security to power infrastructure and site selection. The speakers address common misconceptions about remote work, urging newcomers to gain foundational on-site experience to build the technical grit required for advancement. Beyond staffing, the dialogue explores the industry’s role in national security and the necessity of upgrading the aging electrical grid through innovations like liquid cooling and energy storage. Ultimately, the source highlights a growing ecosystem that requires localized community development and specialized training programs to sustain its rapid expansion.",
+      "url": "https://www.youtube.com/live/DAF8Rs1qu-k",
+      "duration": "59 MIN",
+      "date": ""
+    },
+    {
       "id": 1772463865106,
       "num": "EP 080",
       "tag": "Nuclear power, Grid Infrastructure, High-Density Computing",
