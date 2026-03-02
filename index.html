@@ -430,66 +430,47 @@ if (form) {
   }
 
 async function renderLive() {
-const container = document.getElementById("live-player-container");
 
-if (!container) {
-  console.log("Live container not found");
-  return;
-}
+  const container = document.getElementById("live-player-container");
+  if (!container) return;
+
   const badge = document.getElementById("live-badge");
-
   badge.style.display = "none";
 
   const API_KEY = "AIzaSyDNkGTgJSttflP-mujnKtBW_iMs6imOzhw";
   const CHANNEL_ID = "UCVqf4LcK7CDz0mFFGAl96mg";
 
-  // --------------------------------
-  // 1️⃣ LOAD LATEST EPISODE (ADMIN)
-  // --------------------------------
+  // ✅ MOVE VARIABLE HERE
+  let videoId = null;
 
-    let videoId = null;
-  
+  // -----------------------------
+  // LOAD LATEST EPISODE
+  // -----------------------------
   try {
 
     const data = await loadData();
 
-    if (!data || !data.episodes || data.episodes.length === 0) {
+    if (!data?.episodes?.length) {
       console.log("No episodes found");
       return;
     }
 
     const latest = data.episodes[0];
 
-if (latest.url) {
+    if (latest.url) {
+      const match = latest.url.match(
+        /(?:youtube\.com\/(?:watch\?v=|live\/)|youtu\.be\/)([^&?/]+)/
+      );
 
-  // Supports youtube.com/watch, /live/, and youtu.be links
-  const match = latest.url.match(
-    /(?:youtube\.com\/(?:watch\?v=|live\/)|youtu\.be\/)([^&?/]+)/
-  );
-
-  if (match) {
-    videoId = match[1];
-  }
-}
-
-if (!videoId) {
-  console.log("Could not extract video ID from URL");
-  return;
-}
+      if (match) videoId = match[1];
     }
 
-    // Show latest episode by default
-    container.innerHTML = `
-      <div class="live-offline-player">
-        <iframe
-          src="https://www.youtube.com/embed/${videoId}"
-          allowfullscreen>
-        </iframe>
-      </div>`;
-      
   } catch (e) {
     console.log("Admin data failed:", e);
   }
+
+  // ✅ NOW videoId EXISTS HERE
+  if (!videoId) return;
 
   // --------------------------------
   // 2️⃣ CHECK YOUTUBE LIVE
