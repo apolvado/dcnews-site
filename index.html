@@ -161,6 +161,15 @@
     }
   </style>
 </head>
+  <!-- WATCH LIVE SECTION -->
+<div id="live-player-container"></div>
+
+<!-- ALL SCRIPTS HERE -->
+<script>
+  render();
+  renderLive();
+  setInterval(renderLive, 60000);
+</script>
 <body>
 
 <div class="ticker">
@@ -421,8 +430,12 @@ if (form) {
   }
 
 async function renderLive() {
+const container = document.getElementById("live-player-container");
 
-  const container = document.getElementById("live-player-container");
+if (!container) {
+  console.log("Live container not found");
+  return;
+}
   const badge = document.getElementById("live-badge");
 
   badge.style.display = "none";
