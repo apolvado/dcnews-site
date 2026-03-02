@@ -446,6 +446,9 @@ if (!container) {
   // --------------------------------
   // 1️⃣ LOAD LATEST EPISODE (ADMIN)
   // --------------------------------
+
+    let videoId = null;
+  
   try {
 
     const data = await loadData();
@@ -456,8 +459,6 @@ if (!container) {
     }
 
     const latest = data.episodes[0];
-
-let videoId = null;
 
 if (latest.url) {
 
