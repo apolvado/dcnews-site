@@ -18,6 +18,16 @@
   ],
   "episodes": [
     {
+      "id": 1772463447747,
+      "num": "EP 81",
+      "tag": "Edge Data Centers, Community Involvement",
+      "title": "Data Center News Show - February 19, 2026",
+      "description": "This discussion highlights the current state of the **data center industry**, focusing on the **public misinformation** and **community resistance** surrounding large-scale developments. Industry experts discuss the significant challenges of **site selection**, noting that access to **reliable power** is now a greater priority than land availability. To address environmental concerns, the speakers explore sustainable innovations, such as closed-loop cooling systems and waste heat recycling technologies that improve energy efficiency. The conversation also predicts a future of distributed computing, where modular edge sites and AI-driven humanoid robots become common in various sectors. Ultimately, the participants emphasize the industry's responsibility to educate the public on the economic and technological benefits that data centers provide.",
+      "url": "https://www.youtube.com/live/YyWpB8XucBE",
+      "duration": "",
+      "date": ""
+    },
+    {
       "id": 1772202915430,
       "num": "EP 082",
       "tag": "Liquid Cooling, Data Center of the Future",
