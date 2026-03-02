@@ -451,7 +451,7 @@ async function renderLive() {
 
     if (latest.url) {
       const match = latest.url.match(
-        /(?:youtube\.com\/(?:watch\?v=|live\/)|youtu\.be\/)([^&?/]+)/
+        /(?:youtube(?:\.com)?\/(?:watch\?v=|live\/)|youtu\.be\/)([^&?/\s]+)/
       );
 
       if (match) videoId = match[1];
