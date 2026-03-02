@@ -395,10 +395,13 @@
       }
     }
 
-    // Newsletter form
-    const form = document.getElementById('newsletter-form');
-    form.action = data.substackUrl || 'https://datacenternews.substack.com/subscribe';
-    form.method = 'GET';
+  // Newsletter form
+const form = document.getElementById('newsletter-form');
+
+if (form) {
+  form.action = data.substackUrl || 'https://datacenternews.substack.com/subscribe';
+  form.method = 'GET';
+}
   }
 
   // ─── LIVE STREAM ─────────────────────────────────────────────────
