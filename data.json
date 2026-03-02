@@ -48,16 +48,6 @@
       "date": ""
     },
     {
-      "id": 1772494438834,
-      "num": "EP 041",
-      "tag": "",
-      "title": "Data Center News Show - January 29, 2026",
-      "description": "On this Data Center News Show, we feature industry experts to explore a projected $3 trillion \"investment super cycle\" driven by the global demand for AI and GPU-dense environments. The panel recaps the latest insights from the PTC conference, highlighting a shift toward a more democratized workforce while addressing the acute labor shortage that currently hinders rapid growth. To combat these hurdles, the guests emphasize the importance of trade-based education, community college certificate programs, and the need for companies to move more decisively when hiring talent. The conversation also tackles the rise of \"NIMBYism\" and community resistance, advocating for a stronger public relations effort to demystify data centers as clean, tax-positive operators that improve local infrastructure. Finally, the episode dives into the future of facility management, showcasing how robotics and IoT sensors are revolutionizing the industry by enabling predictive maintenance and augmenting staff for high-stakes tasks like thermal imaging and equipment monitoring.",
-      "url": "https://www.youtube.com/live/3kD9qNpjGK8",
-      "duration": "57 MIN",
-      "date": ""
-    },
-    {
       "id": 1772464232044,
       "num": "EP 042",
       "tag": "Veterans in Data Centers",
@@ -65,6 +55,16 @@
       "description": "This episode features a panel discussion focusing on recruiting military veterans into the data center industry. Industry experts emphasize that the sector offers lucrative career paths in fields ranging from physical security to power infrastructure and site selection. The speakers address common misconceptions about remote work, urging newcomers to gain foundational on-site experience to build the technical grit required for advancement. Beyond staffing, the dialogue explores the industryÃ¢ÂÂs role in national security and the necessity of upgrading the aging electrical grid through innovations like liquid cooling and energy storage. Ultimately, the source highlights a growing ecosystem that requires localized community development and specialized training programs to sustain its rapid expansion.",
       "url": "https://www.youtube.com/live/DAF8Rs1qu-k",
       "duration": "59 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772494438834,
+      "num": "EP 041",
+      "tag": "",
+      "title": "Data Center News Show - January 29, 2026",
+      "description": "On this Data Center News Show, we feature industry experts to explore a projected $3 trillion \"investment super cycle\" driven by the global demand for AI and GPU-dense environments. The panel recaps the latest insights from the PTC conference, highlighting a shift toward a more democratized workforce while addressing the acute labor shortage that currently hinders rapid growth. To combat these hurdles, the guests emphasize the importance of trade-based education, community college certificate programs, and the need for companies to move more decisively when hiring talent. The conversation also tackles the rise of \"NIMBYism\" and community resistance, advocating for a stronger public relations effort to demystify data centers as clean, tax-positive operators that improve local infrastructure. Finally, the episode dives into the future of facility management, showcasing how robotics and IoT sensors are revolutionizing the industry by enabling predictive maintenance and augmenting staff for high-stakes tasks like thermal imaging and equipment monitoring.",
+      "url": "https://www.youtube.com/live/3kD9qNpjGK8",
+      "duration": "57 MIN",
       "date": ""
     }
   ],
