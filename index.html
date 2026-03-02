@@ -422,36 +422,46 @@ async function renderLive() {
   const container = document.getElementById("live-player-container");
   const badge = document.getElementById("live-badge");
 
-  // Always start offline
   badge.style.display = "none";
 
   const API_KEY = "AIzaSyDNkGTgJSttflP-mujnKtBW_iMs6imOzhw";
   const CHANNEL_ID = "UCVqf4LcK7CDz0mFFGAl96mg";
 
-  // -----------------------------
-  // 1️⃣ Show latest episode FIRST
-  // -----------------------------
+  // --------------------------------
+  // 1️⃣ LOAD LATEST EPISODE (ADMIN)
+  // --------------------------------
   try {
+
     const data = await loadData();
 
-    if (data?.episodes?.length > 0) {
-      const latest = data.episodes[0];
-
-      container.innerHTML = `
-        <div class="live-offline-player">
-          <iframe
-            src="https://www.youtube.com/embed/${latest.youtubeId}"
-            allowfullscreen>
-          </iframe>
-        </div>`;
+    if (!data || !data.episodes || data.episodes.length === 0) {
+      console.log("No episodes found");
+      return;
     }
+
+    const latest = data.episodes[0];
+
+    if (!latest.youtubeId) {
+      console.log("Missing youtubeId");
+      return;
+    }
+
+    // Show latest episode by default
+    container.innerHTML = `
+      <div class="live-offline-player">
+        <iframe
+          src="https://www.youtube.com/embed/${latest.youtubeId}"
+          allowfullscreen>
+        </iframe>
+      </div>`;
+      
   } catch (e) {
-    console.log("Episode load failed", e);
+    console.log("Admin data failed:", e);
   }
 
-  // -----------------------------
-  // 2️⃣ Check LIVE status
-  // -----------------------------
+  // --------------------------------
+  // 2️⃣ CHECK YOUTUBE LIVE
+  // --------------------------------
   try {
 
     const response = await fetch(
@@ -481,10 +491,11 @@ async function renderLive() {
   }
 }
 
-// Initial load
+// run
 render();
 renderLive();
 setInterval(renderLive, 60000);
+</script>
 </script>
 </body>
 </html>
