@@ -465,6 +465,9 @@
     console.log("Live check failed:", err);
   }
 }
+  render();
+renderLive();
+setInterval(renderLive, 60000);
 </script>
 </body>
 </html>
