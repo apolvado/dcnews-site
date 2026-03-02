@@ -29,7 +29,7 @@
     },
     {
       "id": 1772463865106,
-      "num": "EP 080",
+      "num": "EP 043",
       "tag": "Nuclear power, Grid Infrastructure, High-Density Computing",
       "title": "Data Center News Show - February 12, 2026",
       "description": "This episode of the Data Center News Show examines the critical infrastructure shifts necessary to support the rise of artificial intelligence and high-density computing. A major focus is the essential transition from air cooling to liquid cooling systems, which provide significantly better heat rejection for modern GPUs and a typical return on investment of about 21 months. The panel clarifies misconceptions about water usage, noting that the industry is moving away from evaporative towers toward closed-loop systems and reclaimed water sources. Faced with power grid wait times as long as ten years, developers are increasingly pursuing power independence by collocating data centers with nuclear plants and exploring the potential of Small Modular Reactors. Additionally, the conversation highlights how transitioning from AC to DC power architectures and utilizing liquid-cooled transformers can dramatically improve energy efficiency, eventually allowing waste heat to be repurposed via absorption cooling technology.",
