@@ -404,11 +404,11 @@
       }
     }
 
-  // Newsletter form
 const form = document.getElementById('newsletter-form');
 
 if (form) {
-  form.action = data.substackUrl || 'https://datacenternews.substack.com/subscribe';
+  form.action =
+    data.substackUrl || 'https://datacenternews.substack.com/subscribe';
   form.method = 'GET';
 }
   }
