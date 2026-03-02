@@ -421,58 +421,80 @@ async function renderLive() {
 
   const container = document.getElementById("live-player-container");
   const badge = document.getElementById("live-badge");
-
-  // ✅ ALWAYS start in OFFLINE state
-  badge.style.display = "none";
+  const badgeText = document.getElementById("live-badge-text");
 
   const API_KEY = "AIzaSyDNkGTgJSttflP-mujnKtBW_iMs6imOzhw";
   const CHANNEL_ID = "UCVqf4LcK7CDz0mFFGAl96mg";
 
-  // ---------- 1️⃣ Show latest episode first ----------
-  const data = await loadData();
+  // -----------------------------
+  // 1️⃣ Default = OFFLINE STATE
+  // -----------------------------
+  badge.style.display = "none";
+  badge.classList.remove("offline-badge");
 
-  if (data.episodes && data.episodes.length > 0) {
-    const latest = data.episodes[0];
+  // -----------------------------
+  // 2️⃣ Show latest episode (ADMIN CONTROLLED)
+  // -----------------------------
+  try {
+    const adminData = await loadData();
 
-    container.innerHTML = `
-      <iframe
-        width="100%"
-        height="500"
-        src="https://www.youtube.com/embed/${latest.youtubeId}"
-        frameborder="0"
-        allowfullscreen>
-      </iframe>`;
+    if (adminData.episodes && adminData.episodes.length > 0) {
+      const latest = adminData.episodes[0];
+
+      container.innerHTML = `
+        <div class="live-offline-player">
+          <iframe
+            src="https://www.youtube.com/embed/${latest.youtubeId}"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
+    }
+  } catch (e) {
+    console.log("Admin data failed:", e);
   }
 
-  // ---------- 2️⃣ Check YouTube LIVE status ----------
+  // -----------------------------
+  // 3️⃣ CHECK YOUTUBE LIVE STATUS
+  // -----------------------------
   try {
 
     const response = await fetch(
       `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
     );
 
-    const dataLive = await response.json();
+    const liveData = await response.json();
 
-    // If livestream exists
-    if (dataLive.items && dataLive.items.length > 0) {
+    // ✅ IF LIVE STREAM EXISTS
+    if (liveData.items && liveData.items.length > 0) {
 
-      const liveVideoId = dataLive.items[0].id.videoId;
+      const liveVideoId = liveData.items[0].id.videoId;
 
+      // Show LIVE badge
+      badge.style.display = "flex";
+      badgeText.textContent = "LIVE NOW";
+
+      // Replace player with livestream
       container.innerHTML = `
-        <iframe
-          width="100%"
-          height="500"
-          src="https://www.youtube.com/embed/${liveVideoId}?autoplay=1"
-          allow="autoplay"
-          allowfullscreen>
-        </iframe>`;
+        <div class="live-player">
+          <iframe
+            src="https://www.youtube.com/embed/${liveVideoId}?autoplay=1&mute=1"
+            allow="autoplay; encrypted-media"
+            allowfullscreen>
+          </iframe>
+        </div>
+      `;
     }
 
   } catch (err) {
     console.log("Live check failed:", err);
   }
 }
-  render();
+
+// Initial render
+render();
+
+// Live status refresh every 60 seconds
 renderLive();
 setInterval(renderLive, 60000);
 </script>
