@@ -18,6 +18,16 @@
   ],
   "episodes": [
     {
+      "id": 1772498502322,
+      "num": "EP 033",
+      "tag": "Server rack design, Nvidia, BlackRock",
+      "title": "Data Center News Show - October 9, 2025",
+      "description": "In this episode, we discuss the evolving infrastructure of the digital world. The participants address public concerns regarding surging energy costs, clarifying that data center power consumption is often overshadowed by residential cooling needs. A significant portion of the conversation focuses on AI-driven densification, highlighting how new hardware from companies like Nvidia is forcing a shift toward advanced liquid cooling solutions. The panel also explores the financial landscape of the industry, noting that massive investments from firms like BlackRock signal that data centers are now viewed as stable, mature assets. Finally, the experts debate the operational risks of packing too much power into single server racks, suggesting a future need for balanced, distributed designs.",
+      "url": "https://www.youtube.com/live/3dZC7WTR1lU",
+      "duration": "56 MIN",
+      "date": ""
+    },
+    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
