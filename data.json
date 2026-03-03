@@ -18,16 +18,6 @@
   ],
   "episodes": [
     {
-      "id": 1772497100006,
-      "num": "EP 037",
-      "tag": "Energy, Grid Infrastructure, Behind the Meter",
-      "title": "Data Center News Show - December 18, 2025",
-      "description": "In this episode, we feature industry experts analyzing the shift toward on-site power generation as a solution to grid congestion and long utility lead times. The panel explores the benefits of fuel cells and modular infrastructure, emphasizing that generating power behind the meter can improve a data center's speed to market and financial predictability. Participants highlight the potential for heat reuse and liquid cooling to increase efficiency, though they acknowledge that high capital costs and supply chain bottlenecks remain significant hurdles. Looking toward 2035, the experts predict a future defined by increased modularity, deeper community engagement through technical education, and the possible emergence of space-based facilities. Ultimately, the source underscores a transition toward energy independence as operators navigate political pressures and the rising demands of artificial intelligence.",
-      "url": "https://www.youtube.com/live/UcGdbsTkG-8",
-      "duration": "61 MIN",
-      "date": ""
-    },
-    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
@@ -105,6 +95,16 @@
       "description": "In this episode of the show, industry experts discuss the rapid evolution of the AI race and its impact on infrastructure, specifically dismissing claims that edge devices will replace data centers as a \"hallucination.\" Instead, they highlight a shift toward autonomous agents and unstructured data, which is driving a massive need for \"adaptive reuse\"—repurposing industrial sites like paper plants and steel mills into GPU-ready facilities in as little as six to nine months. The panel emphasizes the high profitability of GPU-as-a-service for the mid-market and contrasts Pennsylvania’s supportive regulatory environment with the rising \"NIMBYism\" and moratoriums seen in other regions. To maintain a competitive edge over China’s R&D pace, the experts suggest the U.S. leverage Small Modular Reactors (SMRs) and strategic nuclear fuel reserves to power the next generation of sites. Looking toward 2026, the discussion predicts a $3 trillion \"investment super cycle\" defined by the standard use of data center robots, modular construction, and the emergence of ultra-high-density one-megawatt racks to maximize speed and profitability.",
       "url": "https://www.youtube.com/live/We6aTUV0tMs",
       "duration": "46 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772497100006,
+      "num": "EP 037",
+      "tag": "Energy, Grid Infrastructure, Behind the Meter",
+      "title": "Data Center News Show - December 18, 2025",
+      "description": "In this episode, we feature industry experts analyzing the shift toward on-site power generation as a solution to grid congestion and long utility lead times. The panel explores the benefits of fuel cells and modular infrastructure, emphasizing that generating power behind the meter can improve a data center's speed to market and financial predictability. Participants highlight the potential for heat reuse and liquid cooling to increase efficiency, though they acknowledge that high capital costs and supply chain bottlenecks remain significant hurdles. Looking toward 2035, the experts predict a future defined by increased modularity, deeper community engagement through technical education, and the possible emergence of space-based facilities. Ultimately, the source underscores a transition toward energy independence as operators navigate political pressures and the rising demands of artificial intelligence.",
+      "url": "https://www.youtube.com/live/UcGdbsTkG-8",
+      "duration": "61 MIN",
       "date": ""
     }
   ],
