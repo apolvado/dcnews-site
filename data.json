@@ -88,16 +88,6 @@
       "date": ""
     },
     {
-      "id": 1772498862272,
-      "num": "EP 032",
-      "tag": "AI, Modular",
-      "title": "Data Center News Show - October 2, 2025",
-      "description": "This episode features a roundtable discussion regarding the rapid evolution of digital infrastructure driven by the AI hype cycle. Industry experts debate the AI efficiency paradox, questioning whether increased hardware performance will eventually lead to a market glut or if society’s insatiable appetite for data will sustain growth. The participants examine the practicalities of modular data center deployments and the necessity of retrofitting existing urban buildings to support high-density power requirements. They also explore the tensions between speed of innovation and environmental sustainability, noting that the competitive \"arms race\" often prioritizes operational capacity over green energy goals. Additional topics include the rise of open-source AI models like DeepSeek and the unique distributed compute strategies currently being utilized within the defense sector. Ultimately, the panel highlights how advanced liquid cooling and prefabricated designs are essential tools for adapting to an unpredictable technological future.",
-      "url": "https://youtube.com/live/6_zCsY0rHoQ",
-      "duration": "58 MIN",
-      "date": ""
-    },
-    {
       "id": 1772496819393,
       "num": "EP 038",
       "tag": "AI infrastructure, NIMBYism, Nuclear Power",
@@ -155,6 +145,16 @@
       "description": "In this episode, we discuss the evolving infrastructure of the digital world. The participants address public concerns regarding surging energy costs, clarifying that data center power consumption is often overshadowed by residential cooling needs. A significant portion of the conversation focuses on AI-driven densification, highlighting how new hardware from companies like Nvidia is forcing a shift toward advanced liquid cooling solutions. The panel also explores the financial landscape of the industry, noting that massive investments from firms like BlackRock signal that data centers are now viewed as stable, mature assets. Finally, the experts debate the operational risks of packing too much power into single server racks, suggesting a future need for balanced, distributed designs.",
       "url": "https://www.youtube.com/live/3dZC7WTR1lU",
       "duration": "56 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772498862272,
+      "num": "EP 032",
+      "tag": "AI, Modular",
+      "title": "Data Center News Show - October 2, 2025",
+      "description": "This episode features a roundtable discussion regarding the rapid evolution of digital infrastructure driven by the AI hype cycle. Industry experts debate the AI efficiency paradox, questioning whether increased hardware performance will eventually lead to a market glut or if society’s insatiable appetite for data will sustain growth. The participants examine the practicalities of modular data center deployments and the necessity of retrofitting existing urban buildings to support high-density power requirements. They also explore the tensions between speed of innovation and environmental sustainability, noting that the competitive \"arms race\" often prioritizes operational capacity over green energy goals. Additional topics include the rise of open-source AI models like DeepSeek and the unique distributed compute strategies currently being utilized within the defense sector. Ultimately, the panel highlights how advanced liquid cooling and prefabricated designs are essential tools for adapting to an unpredictable technological future.",
+      "url": "https://youtube.com/live/6_zCsY0rHoQ",
+      "duration": "58 MIN",
       "date": ""
     }
   ],
