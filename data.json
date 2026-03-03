@@ -18,16 +18,6 @@
   ],
   "episodes": [
     {
-      "id": 1772498090339,
-      "num": "EP 035",
-      "tag": "",
-      "title": "Data Center News Show - November 13, 2025",
-      "description": "On this episode of the Data Center News Show, we feature a group of industry experts discussing the rapid expansion and logistical hurdles of modern data infrastructure. A primary focus is the massive power demand in Texas, where interconnection requests have reached staggering levels despite concerns about project viability and water scarcity. The participants explore how on-site power generation and liquid cooling technologies are becoming essential as traditional utility grids struggle to keep pace with high-density AI workloads. We also critique the current state of OpenAI, debating the company's financial stability and its recent calls for government loan backing. Furthermore, the conversation highlights the collaborative nature of the data center community and the urgent need for better public advocacy to counter negative industry perceptions. Together, the speakers suggest that while the sector faces significant capital and resource constraints, it remains a critical engine for technological growth.",
-      "url": "https://www.youtube.com/live/OVwdtc0EEwo",
-      "duration": "61 MIN",
-      "date": ""
-    },
-    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
@@ -85,6 +75,16 @@
       "description": "In this transcript from the Data Center News Show, industry experts discuss the critical infrastructure and power challenges currently facing the data center sector. Andy Urda from LS Electric highlights the expansion of domestic manufacturing for circuit breakers and switchgear to resolve supply chain delays, while Wyatt Pemberton of Critical Grid Solutions examines the shift toward on-site power generation and \"behind-the-fence\" solutions to bypass grid congestion. The conversation explores technical transitions, such as moving toward high-efficiency DC power and the rising demand for AI-driven compute density. Additionally, the participants address the public relations hurdles of the industry, emphasizing the need for better community engagement regarding noise, water use, and emissions. Ultimately, the source provides a comprehensive look at how technological innovation and decentralized energy are being used to meet the explosive growth of digital infrastructure.",
       "url": "https://www.youtube.com/live/cd9qXCCrdDI",
       "duration": "65 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772498090339,
+      "num": "EP 035",
+      "tag": "",
+      "title": "Data Center News Show - November 13, 2025",
+      "description": "On this episode of the Data Center News Show, we feature a group of industry experts discussing the rapid expansion and logistical hurdles of modern data infrastructure. A primary focus is the massive power demand in Texas, where interconnection requests have reached staggering levels despite concerns about project viability and water scarcity. The participants explore how on-site power generation and liquid cooling technologies are becoming essential as traditional utility grids struggle to keep pace with high-density AI workloads. We also critique the current state of OpenAI, debating the company's financial stability and its recent calls for government loan backing. Furthermore, the conversation highlights the collaborative nature of the data center community and the urgent need for better public advocacy to counter negative industry perceptions. Together, the speakers suggest that while the sector faces significant capital and resource constraints, it remains a critical engine for technological growth.",
+      "url": "https://www.youtube.com/live/OVwdtc0EEwo",
+      "duration": "61 MIN",
       "date": ""
     },
     {
