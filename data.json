@@ -18,16 +18,6 @@
   ],
   "episodes": [
     {
-      "id": 1772496819393,
-      "num": "EP 038",
-      "tag": "AI infrastructure, NIMBYism, Nuclear Power",
-      "title": "Data Center News Show - January 8, 2026",
-      "description": "In this episode of the show, industry experts discuss the rapid evolution of the AI race and its impact on infrastructure, specifically dismissing claims that edge devices will replace data centers as a \"hallucination.\" Instead, they highlight a shift toward autonomous agents and unstructured data, which is driving a massive need for \"adaptive reuse\"—repurposing industrial sites like paper plants and steel mills into GPU-ready facilities in as little as six to nine months. The panel emphasizes the high profitability of GPU-as-a-service for the mid-market and contrasts Pennsylvania’s supportive regulatory environment with the rising \"NIMBYism\" and moratoriums seen in other regions. To maintain a competitive edge over China’s R&D pace, the experts suggest the U.S. leverage Small Modular Reactors (SMRs) and strategic nuclear fuel reserves to power the next generation of sites. Looking toward 2026, the discussion predicts a $3 trillion \"investment super cycle\" defined by the standard use of data center robots, modular construction, and the emergence of ultra-high-density one-megawatt racks to maximize speed and profitability.",
-      "url": "https://www.youtube.com/live/We6aTUV0tMs",
-      "duration": "46 MIN",
-      "date": ""
-    },
-    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
@@ -85,6 +75,16 @@
       "description": "In this transcript from the Data Center News Show, industry experts discuss the critical infrastructure and power challenges currently facing the data center sector. Andy Urda from LS Electric highlights the expansion of domestic manufacturing for circuit breakers and switchgear to resolve supply chain delays, while Wyatt Pemberton of Critical Grid Solutions examines the shift toward on-site power generation and \"behind-the-fence\" solutions to bypass grid congestion. The conversation explores technical transitions, such as moving toward high-efficiency DC power and the rising demand for AI-driven compute density. Additionally, the participants address the public relations hurdles of the industry, emphasizing the need for better community engagement regarding noise, water use, and emissions. Ultimately, the source provides a comprehensive look at how technological innovation and decentralized energy are being used to meet the explosive growth of digital infrastructure.",
       "url": "https://www.youtube.com/live/cd9qXCCrdDI",
       "duration": "65 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772496819393,
+      "num": "EP 038",
+      "tag": "AI infrastructure, NIMBYism, Nuclear Power",
+      "title": "Data Center News Show - January 8, 2026",
+      "description": "In this episode of the show, industry experts discuss the rapid evolution of the AI race and its impact on infrastructure, specifically dismissing claims that edge devices will replace data centers as a \"hallucination.\" Instead, they highlight a shift toward autonomous agents and unstructured data, which is driving a massive need for \"adaptive reuse\"—repurposing industrial sites like paper plants and steel mills into GPU-ready facilities in as little as six to nine months. The panel emphasizes the high profitability of GPU-as-a-service for the mid-market and contrasts Pennsylvania’s supportive regulatory environment with the rising \"NIMBYism\" and moratoriums seen in other regions. To maintain a competitive edge over China’s R&D pace, the experts suggest the U.S. leverage Small Modular Reactors (SMRs) and strategic nuclear fuel reserves to power the next generation of sites. Looking toward 2026, the discussion predicts a $3 trillion \"investment super cycle\" defined by the standard use of data center robots, modular construction, and the emergence of ultra-high-density one-megawatt racks to maximize speed and profitability.",
+      "url": "https://www.youtube.com/live/We6aTUV0tMs",
+      "duration": "46 MIN",
       "date": ""
     },
     {
