@@ -148,16 +148,6 @@
       "date": ""
     },
     {
-      "id": 1772499882496,
-      "num": "EP 029",
-      "tag": "Workforce Development, Recruiting",
-      "title": "Data Center News Show - August 14, 2025",
-      "description": "In this Data Center News Show episode, experts Roxanne Szepanik and Sean Farney discuss the nuanced labor shortage and talent acquisition challenges within the digital infrastructure industry. They argue that the perceived scarcity of workers is often an innovation problem, where companies fail to act quickly enough to hire qualified middle-tier talent or neglect to build internal training pipelines. The speakers emphasize the importance of mentorship programs, partnerships with trade schools, and early outreach in schools to attract younger generations to specialized technical roles. The discussion also explores the future role of robotics and automation in addressing repetitive operational tasks while maintaining that human oversight remains essential for mission-critical reliability. Furthermore, they highlight that successful candidates must possess a blend of technical skills, strong work ethic, and high conscientiousness to navigate the rigorous procedures of data center management. Ultimately, the source suggests that the industry must shift toward standardized education and proactive recruitment strategies to sustain its rapid global expansion.",
-      "url": "https://www.youtube.com/live/p4rhY_Y94wE",
-      "duration": "51 MIN",
-      "date": ""
-    },
-    {
       "id": 1772498862272,
       "num": "EP 032",
       "tag": "AI, Modular",
@@ -185,6 +175,16 @@
       "description": "Today's show explores how the industry is currently defined by an intense search for connectivity and power, which has turned almost any location with available energy into a potential emerging market. Because traditional utility timelines are too slow, many developers are shifting toward on-site power generation using natural gas, nuclear energy, and modular hydrogen fuel cells, even though they still face massive supply chain delays for critical equipment like transformers and turbines. The geographic landscape of the industry is rapidly shifting away from saturated areas like Northern California toward rising hubs such as Oregon, Columbus, and Texas, while global investment from Middle Eastern sovereign wealth funds continues to grow. Industry experts on the panel agree that we are not in an AI bubble, but rather at an infrastructure bottleneck, leading to the retrofitting of brownfield sites for high-density liquid cooling and a move by former crypto miners toward AI and high-performance computing. Beyond the focus on AI, the discussion highlights the staggering growth of data storage needs, which is driving innovation in extreme long-term solutions such as storing data on ceramic materials designed to last for centuries.",
       "url": "https://www.youtube.com/live/T0Vbk46mRzI",
       "duration": "60 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772499882496,
+      "num": "EP 029",
+      "tag": "Workforce Development, Recruiting",
+      "title": "Data Center News Show - August 14, 2025",
+      "description": "In this Data Center News Show episode, experts Roxanne Szepanik and Sean Farney discuss the nuanced labor shortage and talent acquisition challenges within the digital infrastructure industry. They argue that the perceived scarcity of workers is often an innovation problem, where companies fail to act quickly enough to hire qualified middle-tier talent or neglect to build internal training pipelines. The speakers emphasize the importance of mentorship programs, partnerships with trade schools, and early outreach in schools to attract younger generations to specialized technical roles. The discussion also explores the future role of robotics and automation in addressing repetitive operational tasks while maintaining that human oversight remains essential for mission-critical reliability. Furthermore, they highlight that successful candidates must possess a blend of technical skills, strong work ethic, and high conscientiousness to navigate the rigorous procedures of data center management. Ultimately, the source suggests that the industry must shift toward standardized education and proactive recruitment strategies to sustain its rapid global expansion.",
+      "url": "https://www.youtube.com/live/p4rhY_Y94wE",
+      "duration": "51 MIN",
       "date": ""
     }
   ],
