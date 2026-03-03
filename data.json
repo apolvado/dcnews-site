@@ -88,16 +88,6 @@
       "date": ""
     },
     {
-      "id": 1772497445489,
-      "num": "EP 036",
-      "tag": "Data Center Development",
-      "title": "Data Center News Show - December 11, 2025",
-      "description": "In this episode, I discuss several topics with industry expert, Martin Renkis.  We discuss the evolving landscape of digital infrastructure, specifically focusing on the upcoming PTC conference and the unique business dynamics of the data center sector. They explore the critical shift toward on-site power generation necessitated by massive utility grid backlogs and the rising energy demands of artificial intelligence. The conversation highlights technical innovations in cooling methods, such as liquid and immersion systems, which are becoming essential as traditional air cooling struggles to manage high-density racks. Furthermore, they address the logistical hurdles of land acquisition and power studies, while emphasizing the industry's need for better public education regarding environmental impact and community benefits. Together, they provide a snapshot of an industry grappling with rapid growth, specialized labor shortages, and the complexities of building sustainable, high-capacity facilities.",
-      "url": "https://www.youtube.com/live/UBx-x5KgRq4",
-      "duration": "47 MIN",
-      "date": ""
-    },
-    {
       "id": 1772496819393,
       "num": "EP 038",
       "tag": "AI infrastructure, NIMBYism, Nuclear Power",
@@ -115,6 +105,16 @@
       "description": "In this episode, we feature industry experts analyzing the shift toward on-site power generation as a solution to grid congestion and long utility lead times. The panel explores the benefits of fuel cells and modular infrastructure, emphasizing that generating power behind the meter can improve a data center's speed to market and financial predictability. Participants highlight the potential for heat reuse and liquid cooling to increase efficiency, though they acknowledge that high capital costs and supply chain bottlenecks remain significant hurdles. Looking toward 2035, the experts predict a future defined by increased modularity, deeper community engagement through technical education, and the possible emergence of space-based facilities. Ultimately, the source underscores a transition toward energy independence as operators navigate political pressures and the rising demands of artificial intelligence.",
       "url": "https://www.youtube.com/live/UcGdbsTkG-8",
       "duration": "61 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772497445489,
+      "num": "EP 036",
+      "tag": "Data Center Development",
+      "title": "Data Center News Show - December 11, 2025",
+      "description": "In this episode, I discuss several topics with industry expert, Martin Renkis.  We discuss the evolving landscape of digital infrastructure, specifically focusing on the upcoming PTC conference and the unique business dynamics of the data center sector. They explore the critical shift toward on-site power generation necessitated by massive utility grid backlogs and the rising energy demands of artificial intelligence. The conversation highlights technical innovations in cooling methods, such as liquid and immersion systems, which are becoming essential as traditional air cooling struggles to manage high-density racks. Furthermore, they address the logistical hurdles of land acquisition and power studies, while emphasizing the industry's need for better public education regarding environmental impact and community benefits. Together, they provide a snapshot of an industry grappling with rapid growth, specialized labor shortages, and the complexities of building sustainable, high-capacity facilities.",
+      "url": "https://www.youtube.com/live/UBx-x5KgRq4",
+      "duration": "47 MIN",
       "date": ""
     }
   ],
