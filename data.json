@@ -68,16 +68,6 @@
       "date": ""
     },
     {
-      "id": 1772500118880,
-      "num": "EP 028",
-      "tag": "Energy, Grid Infrastructure, Cybersecurity",
-      "title": "Data Center News Show - August 7, 2025",
-      "description": "This episode features a discussion regarding the evolving challenges of power generation for modern data centers. Industry experts examine the rise of \"hyper grids\" that combine nuclear, natural gas, and renewable sources to meet the massive electrical demands of artificial intelligence. The conversation highlights critical concerns such as grid instability, long supply chain delays for infrastructure, and the necessity of cybersecurity to protect energy sensors. One participant explains active power management technology, which stabilizes volatile voltage to protect sensitive hardware from damage. Ultimately, the panel concludes that facilities must increasingly adopt on-site generation to bypass utility backlogs and ensure a reliable, high-quality power supply.",
-      "url": "https://www.youtube.com/live/QbWkTuPAYBI",
-      "duration": "48 MIN",
-      "date": ""
-    },
-    {
       "id": 1772494847168,
       "num": "EP 040",
       "tag": "Grid Infrastructure, Behind The Meter",
@@ -145,6 +135,16 @@
       "description": "On this episode of the Data Center News Show, we feature a group of industry experts discussing the rapid expansion and logistical hurdles of modern data infrastructure. A primary focus is the massive power demand in Texas, where interconnection requests have reached staggering levels despite concerns about project viability and water scarcity. The participants explore how on-site power generation and liquid cooling technologies are becoming essential as traditional utility grids struggle to keep pace with high-density AI workloads. We also critique the current state of OpenAI, debating the company's financial stability and its recent calls for government loan backing. Furthermore, the conversation highlights the collaborative nature of the data center community and the urgent need for better public advocacy to counter negative industry perceptions. Together, the speakers suggest that while the sector faces significant capital and resource constraints, it remains a critical engine for technological growth.",
       "url": "https://www.youtube.com/live/OVwdtc0EEwo",
       "duration": "61 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772500118880,
+      "num": "EP 028",
+      "tag": "Energy, Grid Infrastructure, Cybersecurity",
+      "title": "Data Center News Show - August 7, 2025",
+      "description": "This episode features a discussion regarding the evolving challenges of power generation for modern data centers. Industry experts examine the rise of \"hyper grids\" that combine nuclear, natural gas, and renewable sources to meet the massive electrical demands of artificial intelligence. The conversation highlights critical concerns such as grid instability, long supply chain delays for infrastructure, and the necessity of cybersecurity to protect energy sensors. One participant explains active power management technology, which stabilizes volatile voltage to protect sensitive hardware from damage. Ultimately, the panel concludes that facilities must increasingly adopt on-site generation to bypass utility backlogs and ensure a reliable, high-quality power supply.",
+      "url": "https://www.youtube.com/live/QbWkTuPAYBI",
+      "duration": "48 MIN",
       "date": ""
     },
     {
