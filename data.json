@@ -18,16 +18,6 @@
   ],
   "episodes": [
     {
-      "id": 1772499505201,
-      "num": "EP 030",
-      "tag": "",
-      "title": "Data Center News Show - August 21, 2025",
-      "description": "Today's show explores how the industry is currently defined by an intense search for connectivity and power, which has turned almost any location with available energy into a potential emerging market. Because traditional utility timelines are too slow, many developers are shifting toward on-site power generation using natural gas, nuclear energy, and modular hydrogen fuel cells, even though they still face massive supply chain delays for critical equipment like transformers and turbines. The geographic landscape of the industry is rapidly shifting away from saturated areas like Northern California toward rising hubs such as Oregon, Columbus, and Texas, while global investment from Middle Eastern sovereign wealth funds continues to grow. Industry experts on the panel agree that we are not in an AI bubble, but rather at an infrastructure bottleneck, leading to the retrofitting of brownfield sites for high-density liquid cooling and a move by former crypto miners toward AI and high-performance computing. Beyond the focus on AI, the discussion highlights the staggering growth of data storage needs, which is driving innovation in extreme long-term solutions such as storing data on ceramic materials designed to last for centuries.",
-      "url": "https://www.youtube.com/live/T0Vbk46mRzI",
-      "duration": "60 MIN",
-      "date": ""
-    },
-    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
@@ -85,6 +75,16 @@
       "description": "In this transcript from the Data Center News Show, industry experts discuss the critical infrastructure and power challenges currently facing the data center sector. Andy Urda from LS Electric highlights the expansion of domestic manufacturing for circuit breakers and switchgear to resolve supply chain delays, while Wyatt Pemberton of Critical Grid Solutions examines the shift toward on-site power generation and \"behind-the-fence\" solutions to bypass grid congestion. The conversation explores technical transitions, such as moving toward high-efficiency DC power and the rising demand for AI-driven compute density. Additionally, the participants address the public relations hurdles of the industry, emphasizing the need for better community engagement regarding noise, water use, and emissions. Ultimately, the source provides a comprehensive look at how technological innovation and decentralized energy are being used to meet the explosive growth of digital infrastructure.",
       "url": "https://www.youtube.com/live/cd9qXCCrdDI",
       "duration": "65 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772499505201,
+      "num": "EP 030",
+      "tag": "",
+      "title": "Data Center News Show - August 21, 2025",
+      "description": "Today's show explores how the industry is currently defined by an intense search for connectivity and power, which has turned almost any location with available energy into a potential emerging market. Because traditional utility timelines are too slow, many developers are shifting toward on-site power generation using natural gas, nuclear energy, and modular hydrogen fuel cells, even though they still face massive supply chain delays for critical equipment like transformers and turbines. The geographic landscape of the industry is rapidly shifting away from saturated areas like Northern California toward rising hubs such as Oregon, Columbus, and Texas, while global investment from Middle Eastern sovereign wealth funds continues to grow. Industry experts on the panel agree that we are not in an AI bubble, but rather at an infrastructure bottleneck, leading to the retrofitting of brownfield sites for high-density liquid cooling and a move by former crypto miners toward AI and high-performance computing. Beyond the focus on AI, the discussion highlights the staggering growth of data storage needs, which is driving innovation in extreme long-term solutions such as storing data on ceramic materials designed to last for centuries.",
+      "url": "https://www.youtube.com/live/T0Vbk46mRzI",
+      "duration": "60 MIN",
       "date": ""
     },
     {
