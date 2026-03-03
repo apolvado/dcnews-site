@@ -78,16 +78,6 @@
       "date": ""
     },
     {
-      "id": 1772496819393,
-      "num": "EP 038",
-      "tag": "AI infrastructure, NIMBYism, Nuclear Power",
-      "title": "Data Center News Show - January 8, 2026",
-      "description": "In this episode of the show, industry experts discuss the rapid evolution of the AI race and its impact on infrastructure, specifically dismissing claims that edge devices will replace data centers as a \"hallucination.\" Instead, they highlight a shift toward autonomous agents and unstructured data, which is driving a massive need for \"adaptive reuse\"—repurposing industrial sites like paper plants and steel mills into GPU-ready facilities in as little as six to nine months. The panel emphasizes the high profitability of GPU-as-a-service for the mid-market and contrasts Pennsylvania’s supportive regulatory environment with the rising \"NIMBYism\" and moratoriums seen in other regions. To maintain a competitive edge over China’s R&D pace, the experts suggest the U.S. leverage Small Modular Reactors (SMRs) and strategic nuclear fuel reserves to power the next generation of sites. Looking toward 2026, the discussion predicts a $3 trillion \"investment super cycle\" defined by the standard use of data center robots, modular construction, and the emergence of ultra-high-density one-megawatt racks to maximize speed and profitability.",
-      "url": "https://www.youtube.com/live/We6aTUV0tMs",
-      "duration": "46 MIN",
-      "date": ""
-    },
-    {
       "id": 1772495186795,
       "num": "EP 039",
       "tag": "PTC, AI Infrastructure",
@@ -95,6 +85,16 @@
       "description": "In this episode, we celebrate the first anniversary of the Data Center News Show - focused on data center industry news. The discussion features experts from Supermicro and the Nomad Futurist Foundation, who offer practical advice for attending the Pacific Telecommunications Council (PTC) conference in Hawaii. A significant portion of the conversation addresses the critical power shortage facing the industry, noting that massive energy demands for AI infrastructure are outpacing utility capabilities. The participants explore technical solutions like liquid cooling and onsite power generation while lamenting the long wait times for grid connections. Finally, the group emphasizes the need for better public relations to counter negative perceptions of data centers and highlight their role in driving the global economy.",
       "url": "https://www.youtube.com/live/jmeyPQQPOBw",
       "duration": "43 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772496819393,
+      "num": "EP 038",
+      "tag": "AI infrastructure, NIMBYism, Nuclear Power",
+      "title": "Data Center News Show - January 8, 2026",
+      "description": "In this episode of the show, industry experts discuss the rapid evolution of the AI race and its impact on infrastructure, specifically dismissing claims that edge devices will replace data centers as a \"hallucination.\" Instead, they highlight a shift toward autonomous agents and unstructured data, which is driving a massive need for \"adaptive reuse\"—repurposing industrial sites like paper plants and steel mills into GPU-ready facilities in as little as six to nine months. The panel emphasizes the high profitability of GPU-as-a-service for the mid-market and contrasts Pennsylvania’s supportive regulatory environment with the rising \"NIMBYism\" and moratoriums seen in other regions. To maintain a competitive edge over China’s R&D pace, the experts suggest the U.S. leverage Small Modular Reactors (SMRs) and strategic nuclear fuel reserves to power the next generation of sites. Looking toward 2026, the discussion predicts a $3 trillion \"investment super cycle\" defined by the standard use of data center robots, modular construction, and the emergence of ultra-high-density one-megawatt racks to maximize speed and profitability.",
+      "url": "https://www.youtube.com/live/We6aTUV0tMs",
+      "duration": "46 MIN",
       "date": ""
     }
   ],
