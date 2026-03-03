@@ -18,6 +18,16 @@
   ],
   "episodes": [
     {
+      "id": 1772497100006,
+      "num": "EP 037",
+      "tag": "Energy, Grid Infrastructure, Behind the Meter",
+      "title": "Data Center News Show - December 18, 2025",
+      "description": "In this episode, we feature industry experts analyzing the shift toward on-site power generation as a solution to grid congestion and long utility lead times. The panel explores the benefits of fuel cells and modular infrastructure, emphasizing that generating power behind the meter can improve a data center's speed to market and financial predictability. Participants highlight the potential for heat reuse and liquid cooling to increase efficiency, though they acknowledge that high capital costs and supply chain bottlenecks remain significant hurdles. Looking toward 2035, the experts predict a future defined by increased modularity, deeper community engagement through technical education, and the possible emergence of space-based facilities. Ultimately, the source underscores a transition toward energy independence as operators navigate political pressures and the rising demands of artificial intelligence.",
+      "url": "https://www.youtube.com/live/UcGdbsTkG-8",
+      "duration": "61 MIN",
+      "date": ""
+    },
+    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
