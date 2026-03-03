@@ -138,16 +138,6 @@
       "date": ""
     },
     {
-      "id": 1772499505201,
-      "num": "EP 030",
-      "tag": "",
-      "title": "Data Center News Show - August 21, 2025",
-      "description": "Today's show explores how the industry is currently defined by an intense search for connectivity and power, which has turned almost any location with available energy into a potential emerging market. Because traditional utility timelines are too slow, many developers are shifting toward on-site power generation using natural gas, nuclear energy, and modular hydrogen fuel cells, even though they still face massive supply chain delays for critical equipment like transformers and turbines. The geographic landscape of the industry is rapidly shifting away from saturated areas like Northern California toward rising hubs such as Oregon, Columbus, and Texas, while global investment from Middle Eastern sovereign wealth funds continues to grow. Industry experts on the panel agree that we are not in an AI bubble, but rather at an infrastructure bottleneck, leading to the retrofitting of brownfield sites for high-density liquid cooling and a move by former crypto miners toward AI and high-performance computing. Beyond the focus on AI, the discussion highlights the staggering growth of data storage needs, which is driving innovation in extreme long-term solutions such as storing data on ceramic materials designed to last for centuries.",
-      "url": "https://www.youtube.com/live/T0Vbk46mRzI",
-      "duration": "60 MIN",
-      "date": ""
-    },
-    {
       "id": 1772498502322,
       "num": "EP 033",
       "tag": "Server rack design, Nvidia, BlackRock",
@@ -175,6 +165,16 @@
       "description": "The data center industry is shifting toward massive AI factories and sustainable power innovations, such as Applied Atomics' nuclear infrastructure and Bloom Energy’s combustion-free fuel cells that avoid lengthy air permitting processes. Developers are navigating equipment shortages and fluctuating power demands by using crypto-mining for early-stage funding and integrating super capacitors to handle the extreme load swings of high-density AI racks. While cloud storage remains a staple, a growing trend of data repatriation is emerging as enterprises move critical intellectual property to on-premise facilities to regain security and reduce long-term costs. This evolution is further supported by predictive monitoring technologies and the early commercialization of quantum computing at institutions like Oxford. As hyperscaler spending now rivals total consumer spending in the national economy, the industry is focused on future-proofing infrastructure through modular designs and liquid cooling to meet the exponential growth of daily AI transactions and mission-critical edge applications.",
       "url": "https://www.youtube.com/live/p7DOaZcreX0",
       "duration": "54 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772499505201,
+      "num": "EP 030",
+      "tag": "",
+      "title": "Data Center News Show - August 21, 2025",
+      "description": "Today's show explores how the industry is currently defined by an intense search for connectivity and power, which has turned almost any location with available energy into a potential emerging market. Because traditional utility timelines are too slow, many developers are shifting toward on-site power generation using natural gas, nuclear energy, and modular hydrogen fuel cells, even though they still face massive supply chain delays for critical equipment like transformers and turbines. The geographic landscape of the industry is rapidly shifting away from saturated areas like Northern California toward rising hubs such as Oregon, Columbus, and Texas, while global investment from Middle Eastern sovereign wealth funds continues to grow. Industry experts on the panel agree that we are not in an AI bubble, but rather at an infrastructure bottleneck, leading to the retrofitting of brownfield sites for high-density liquid cooling and a move by former crypto miners toward AI and high-performance computing. Beyond the focus on AI, the discussion highlights the staggering growth of data storage needs, which is driving innovation in extreme long-term solutions such as storing data on ceramic materials designed to last for centuries.",
+      "url": "https://www.youtube.com/live/T0Vbk46mRzI",
+      "duration": "60 MIN",
       "date": ""
     }
   ],
