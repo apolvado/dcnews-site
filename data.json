@@ -88,16 +88,6 @@
       "date": ""
     },
     {
-      "id": 1772499202849,
-      "num": "EP 031",
-      "tag": "",
-      "title": "Data Center News Show  - September 11, 2025",
-      "description": "The data center industry is shifting toward massive AI factories and sustainable power innovations, such as Applied Atomics' nuclear infrastructure and Bloom Energy’s combustion-free fuel cells that avoid lengthy air permitting processes. Developers are navigating equipment shortages and fluctuating power demands by using crypto-mining for early-stage funding and integrating super capacitors to handle the extreme load swings of high-density AI racks. While cloud storage remains a staple, a growing trend of data repatriation is emerging as enterprises move critical intellectual property to on-premise facilities to regain security and reduce long-term costs. This evolution is further supported by predictive monitoring technologies and the early commercialization of quantum computing at institutions like Oxford. As hyperscaler spending now rivals total consumer spending in the national economy, the industry is focused on future-proofing infrastructure through modular designs and liquid cooling to meet the exponential growth of daily AI transactions and mission-critical edge applications.",
-      "url": "https://www.youtube.com/live/p7DOaZcreX0",
-      "duration": "54 MIN",
-      "date": ""
-    },
-    {
       "id": 1772496819393,
       "num": "EP 038",
       "tag": "AI infrastructure, NIMBYism, Nuclear Power",
@@ -165,6 +155,16 @@
       "description": "This episode features a roundtable discussion regarding the rapid evolution of digital infrastructure driven by the AI hype cycle. Industry experts debate the AI efficiency paradox, questioning whether increased hardware performance will eventually lead to a market glut or if society’s insatiable appetite for data will sustain growth. The participants examine the practicalities of modular data center deployments and the necessity of retrofitting existing urban buildings to support high-density power requirements. They also explore the tensions between speed of innovation and environmental sustainability, noting that the competitive \"arms race\" often prioritizes operational capacity over green energy goals. Additional topics include the rise of open-source AI models like DeepSeek and the unique distributed compute strategies currently being utilized within the defense sector. Ultimately, the panel highlights how advanced liquid cooling and prefabricated designs are essential tools for adapting to an unpredictable technological future.",
       "url": "https://youtube.com/live/6_zCsY0rHoQ",
       "duration": "58 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772499202849,
+      "num": "EP 031",
+      "tag": "",
+      "title": "Data Center News Show  - September 11, 2025",
+      "description": "The data center industry is shifting toward massive AI factories and sustainable power innovations, such as Applied Atomics' nuclear infrastructure and Bloom Energy’s combustion-free fuel cells that avoid lengthy air permitting processes. Developers are navigating equipment shortages and fluctuating power demands by using crypto-mining for early-stage funding and integrating super capacitors to handle the extreme load swings of high-density AI racks. While cloud storage remains a staple, a growing trend of data repatriation is emerging as enterprises move critical intellectual property to on-premise facilities to regain security and reduce long-term costs. This evolution is further supported by predictive monitoring technologies and the early commercialization of quantum computing at institutions like Oxford. As hyperscaler spending now rivals total consumer spending in the national economy, the industry is focused on future-proofing infrastructure through modular designs and liquid cooling to meet the exponential growth of daily AI transactions and mission-critical edge applications.",
+      "url": "https://www.youtube.com/live/p7DOaZcreX0",
+      "duration": "54 MIN",
       "date": ""
     }
   ],
