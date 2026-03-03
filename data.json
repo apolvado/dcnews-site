@@ -18,16 +18,6 @@
   ],
   "episodes": [
     {
-      "id": 1772497445489,
-      "num": "EP 036",
-      "tag": "Data Center Development",
-      "title": "Data Center News Show - December 11, 2025",
-      "description": "In this episode, I discuss several topics with industry expert, Martin Renkis.  We discuss the evolving landscape of digital infrastructure, specifically focusing on the upcoming PTC conference and the unique business dynamics of the data center sector. They explore the critical shift toward on-site power generation necessitated by massive utility grid backlogs and the rising energy demands of artificial intelligence. The conversation highlights technical innovations in cooling methods, such as liquid and immersion systems, which are becoming essential as traditional air cooling struggles to manage high-density racks. Furthermore, they address the logistical hurdles of land acquisition and power studies, while emphasizing the industry's need for better public education regarding environmental impact and community benefits. Together, they provide a snapshot of an industry grappling with rapid growth, specialized labor shortages, and the complexities of building sustainable, high-capacity facilities.",
-      "url": "https://www.youtube.com/live/UBx-x5KgRq4",
-      "duration": "47 MIN",
-      "date": ""
-    },
-    {
       "id": 1772202915430,
       "num": "EP 045",
       "tag": "Liquid Cooling, Data Center of the Future",
@@ -95,6 +85,16 @@
       "description": "In this episode, we celebrate the first anniversary of the Data Center News Show - focused on data center industry news. The discussion features experts from Supermicro and the Nomad Futurist Foundation, who offer practical advice for attending the Pacific Telecommunications Council (PTC) conference in Hawaii. A significant portion of the conversation addresses the critical power shortage facing the industry, noting that massive energy demands for AI infrastructure are outpacing utility capabilities. The participants explore technical solutions like liquid cooling and onsite power generation while lamenting the long wait times for grid connections. Finally, the group emphasizes the need for better public relations to counter negative perceptions of data centers and highlight their role in driving the global economy.",
       "url": "https://www.youtube.com/live/jmeyPQQPOBw",
       "duration": "43 MIN",
+      "date": ""
+    },
+    {
+      "id": 1772497445489,
+      "num": "EP 036",
+      "tag": "Data Center Development",
+      "title": "Data Center News Show - December 11, 2025",
+      "description": "In this episode, I discuss several topics with industry expert, Martin Renkis.  We discuss the evolving landscape of digital infrastructure, specifically focusing on the upcoming PTC conference and the unique business dynamics of the data center sector. They explore the critical shift toward on-site power generation necessitated by massive utility grid backlogs and the rising energy demands of artificial intelligence. The conversation highlights technical innovations in cooling methods, such as liquid and immersion systems, which are becoming essential as traditional air cooling struggles to manage high-density racks. Furthermore, they address the logistical hurdles of land acquisition and power studies, while emphasizing the industry's need for better public education regarding environmental impact and community benefits. Together, they provide a snapshot of an industry grappling with rapid growth, specialized labor shortages, and the complexities of building sustainable, high-capacity facilities.",
+      "url": "https://www.youtube.com/live/UBx-x5KgRq4",
+      "duration": "47 MIN",
       "date": ""
     },
     {
